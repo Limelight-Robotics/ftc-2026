@@ -492,7 +492,7 @@ public class UtilityOctoQuadConfigMenu extends LinearOpMode
                 // Finally, add the element's name
                 builder.append(e.getDisplayText());
 
-                // We musn't forget the newline
+                // We mustn't forget the newline
                 builder.append("\n");
             }
 

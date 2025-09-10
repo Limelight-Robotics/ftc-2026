@@ -45,7 +45,7 @@ import java.util.List;
  *
  * Three scenarios are tested:
  * Cache Mode = OFF    This is the normal default, where no cache is used, and every read produces a discrete transaction with
- *                     an expansion hub, which is the slowest approach, but guarentees that the value is as fresh (recent) as possible..
+ *                     an expansion hub, which is the slowest approach, but guarantees that the value is as fresh (recent) as possible..
  *
  * Cache Mode = AUTO   This mode will attempt to minimize the number of discrete read commands, by performing bulk-reads
  *                     and then returning values that have been cached.  The cache is updated automatically whenever any specific encoder is re-read.
