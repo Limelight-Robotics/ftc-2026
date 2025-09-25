@@ -19,47 +19,23 @@ public class Robot {
     private double lastLateral = 0;
     private double lastYaw = 0;
 
-    // TeleOp enable/disable flag and toggle debounce state
-    private boolean teleopEnabled = true;
-    private boolean lastToggleButtonState = false;
-
     public void init(HardwareMap hardwareMap) {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "fL");
         backLeftDrive = hardwareMap.get(DcMotor.class, "bL");
         frontRightDrive = hardwareMap.get(DcMotor.class, "fR");
         backRightDrive = hardwareMap.get(DcMotor.class, "bR");
 
+        // Assert that the motors were found in the configuration. Assertions must be enabled at runtime
+        assert frontLeftDrive != null : "frontLeftDrive is null - check robot config name 'fL'";
+        assert backLeftDrive != null : "backLeftDrive is null - check robot config name 'bL'";
+        assert frontRightDrive != null : "frontRightDrive is null - check robot config name 'fR'";
+        assert backRightDrive != null : "backRightDrive is null - check robot config name 'bR'";
+
+        // Now safe to dereference
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
-    }
-
-    /**
-     * Update the teleop enabled state using a toggle button input.
-     * Call this once per control loop and pass the current boolean state of the toggle button
-     * (e.g. gamepad1.a). The toggle occurs on the rising edge.
-     */
-    public void updateTeleopEnabled(boolean toggleButtonPressed) {
-        if (toggleButtonPressed && !lastToggleButtonState) {
-            teleopEnabled = !teleopEnabled;
-            // when disabling, make sure motors are zeroed
-            if (!teleopEnabled) setDrivePower(0,0,0,0);
-        }
-        lastToggleButtonState = toggleButtonPressed;
-    }
-
-    public void setTeleopEnabled(boolean enabled) {
-        teleopEnabled = enabled;
-        if (!teleopEnabled) setDrivePower(0,0,0,0);
-    }
-
-    public boolean isTeleopEnabled() {
-        return teleopEnabled;
-    }
-
-    public void toggleTeleopEnabled() {
-        setTeleopEnabled(!teleopEnabled);
     }
 
     public void driveWithGamepad(double axial, double lateral, double yaw) {
@@ -67,16 +43,6 @@ public class Robot {
         lastAxial = axial;
         lastLateral = lateral;
         lastYaw = yaw;
-
-        if (!teleopEnabled) {
-            // When TeleOp is disabled, ensure motors are stopped and last powers reflect that.
-            setDrivePower(0, 0, 0, 0);
-            lastFrontLeftPower = 0;
-            lastFrontRightPower = 0;
-            lastBackLeftPower = 0;
-            lastBackRightPower = 0;
-            return;
-        }
 
         double frontLeftPower  = axial + lateral + yaw;
         double frontRightPower = axial - lateral - yaw;
@@ -99,18 +65,16 @@ public class Robot {
     }
 
     public void setDrivePower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
-        if (!teleopEnabled) {
-            // safety: force zero when TeleOp disabled
-            if (frontLeftDrive != null) frontLeftDrive.setPower(0);
-            if (frontRightDrive != null) frontRightDrive.setPower(0);
-            if (backLeftDrive != null) backLeftDrive.setPower(0);
-            if (backRightDrive != null) backRightDrive.setPower(0);
-            return;
-        }
-        if (frontLeftDrive != null) frontLeftDrive.setPower(frontLeftPower);
-        if (frontRightDrive != null) frontRightDrive.setPower(frontRightPower);
-        if (backLeftDrive != null) backLeftDrive.setPower(backLeftPower);
-        if (backRightDrive != null) backRightDrive.setPower(backRightPower);
+        // Use assertions instead of null checks; assertions must be enabled at runtime to take effect.
+        assert frontLeftDrive != null : "frontLeftDrive is null when setting power";
+        assert frontRightDrive != null : "frontRightDrive is null when setting power";
+        assert backLeftDrive != null : "backLeftDrive is null when setting power";
+        assert backRightDrive != null : "backRightDrive is null when setting power";
+
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        backLeftDrive.setPower(backLeftPower);
+        backRightDrive.setPower(backRightPower);
     }
 
     public double getFrontLeftPower() { return lastFrontLeftPower; }
