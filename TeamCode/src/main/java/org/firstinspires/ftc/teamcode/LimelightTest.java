@@ -30,14 +30,18 @@ public class LimelightTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             LLResult result = limelight.getLatestResult();
+
+            // we are not asserting result for existence,
+            // as there could be no colors the Limelight3A
+            // can see, so we use debug info just in case.
             if (result != null && result.isValid()) {
                 telemetry.addData("tx", "%4.2f", result.getTx());
                 telemetry.addData("ty", "%4.2f", result.getTy());
                 telemetry.addData("ta", "%4.2f", result.getTa());
-            } else {
-                telemetry.addData("tx", "N/A");
-                telemetry.addData("ty", "N/A");
-                telemetry.addData("ta", "N/A");
+            } else if (result == null) {
+                telemetry.addData("DEBUG", "Result is null");
+            } else if (!result.isValid()) {
+                telemetry.addData("DEBUG", "Result is invalid");
             }
 
             telemetry.update();
