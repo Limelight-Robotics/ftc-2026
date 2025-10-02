@@ -15,7 +15,7 @@ public class LimelightTest extends OpMode {
         robot.init(hardwareMap);
 
         // Initialize the limelight with default pipeline
-        int pipelineIndex = 0;
+        int pipelineIndex = 1; // FTC 2024-2025 Season Yellow Detection
         robot.initLimelight(hardwareMap, "limelight", pipelineIndex);
 
         telemetry.addData("Status", "Initialized");
