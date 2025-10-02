@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -19,6 +21,10 @@ public class Robot {
     private double lastLateral = 0;
     private double lastYaw = 0;
 
+    // limelight specific variables
+    public Limelight3A limelight = null;
+    private Integer limelightPipelineIndex = 0;
+
     public void init(HardwareMap hardwareMap) {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "fL");
         backLeftDrive = hardwareMap.get(DcMotor.class, "bL");
@@ -36,6 +42,48 @@ public class Robot {
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+    }
+
+    public void initLimelight(HardwareMap hardwareMap, String name, Integer pipelineIndex) {
+        this.limelight = hardwareMap.get(Limelight3A.class, name);
+        this.limelightPipelineIndex = pipelineIndex;
+        this.limelight.pipelineSwitch(limelightPipelineIndex);
+    }
+
+    public Integer getLimelightPipelineIndex() {
+        return limelightPipelineIndex;
+    }
+
+    public void setLimelightPipelineIndex(Integer pipelineIndex) {
+        if (limelight != null && pipelineIndex != null && !pipelineIndex.equals(limelightPipelineIndex)) {
+            limelight.pipelineSwitch(pipelineIndex);
+            limelightPipelineIndex = pipelineIndex;
+        }
+    }
+
+    public void startLimelight() {
+        if (limelight != null) {
+            limelight.start();
+        }
+    }
+
+    public void stopLimelight() {
+        if (limelight != null) {
+            limelight.stop();
+        }
+    }
+
+    public LLResult getLimelightResult() {
+        if (limelight != null) {
+            LLResult result = limelight.getLatestResult();
+            if (result != null && result.isValid()) {
+                return result;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     public void driveWithGamepad(double axial, double lateral, double yaw) {

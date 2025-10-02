@@ -1,67 +1,50 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @Autonomous(name="Limelight3A Test", group="Sensor")
 public class LimelightTest extends OpMode {
 
-    private Limelight3A limelight;
+    private final Robot robot = new Robot();
 
     @Override
     public void init() {
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        // Initialize the robot hardware
+        robot.init(hardwareMap);
 
-        if (limelight == null) {
-            telemetry.addData("Error", "Limelight not found in hardwareMap (name: 'limelight')");
-            telemetry.update();
-            return;
-        }
-
-        // set default pipeline
+        // Initialize the limelight with default pipeline
         int pipelineIndex = 0;
-        limelight.pipelineSwitch(pipelineIndex);
+        robot.initLimelight(hardwareMap, "limelight", pipelineIndex);
 
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Pipeline", pipelineIndex);
+        telemetry.addData("Pipeline", robot.getLimelightPipelineIndex());
         telemetry.update();
     }
 
     @Override
     public void start() {
-        if (limelight != null) {
-            limelight.start();
-        }
+        robot.startLimelight();
     }
 
     @Override
     public void loop() {
-        if (limelight == null) {
-            telemetry.addData("Error", "Limelight missing");
-            telemetry.update();
-            return;
-        }
-
-        LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid()) {
+        LLResult result = robot.getLimelightResult();
+        if (result != null) {
             telemetry.addData("Target X Offset (tx)", "%4.2f", result.getTx());
             telemetry.addData("Target Y Offset (ty)", "%4.2f", result.getTy());
             telemetry.addData("Target Area Offset (ta)", "%4.2f", result.getTa());
-        } else if (result == null) {
-            telemetry.addData("DEBUG", "Result is null");
         } else {
-            telemetry.addData("DEBUG", "Result is invalid");
+            telemetry.addData("DEBUG", "No valid target detected");
         }
 
+        telemetry.addData("Pipeline", robot.getLimelightPipelineIndex());
         telemetry.update();
     }
 
     @Override
     public void stop() {
-        if (limelight != null) {
-            limelight.stop();
-        }
+        robot.stopLimelight();
     }
 }
