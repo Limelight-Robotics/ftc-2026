@@ -1,52 +1,50 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @Autonomous(name="Limelight3A Test", group="Sensor")
-public class LimelightTest extends LinearOpMode {
+public class LimelightTest extends OpMode {
+
+    private final Robot robot = new Robot();
 
     @Override
-    public void runOpMode() {
-        Limelight3A limelight;
+    public void init() {
+        // Initialize the robot hardware
+        robot.init(hardwareMap);
 
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-
-        // make sure the camera exists
-        assert limelight != null;
-
-        // default pipeline
-        int pipelineIndex = 0;
-        limelight.pipelineSwitch(pipelineIndex);
-        // start polling
-        limelight.start();
+        // Initialize the limelight with default pipeline
+        int pipelineIndex = 1; // FTC 2024-2025 Season Yellow Detection
+        robot.initLimelight(hardwareMap, "limelight", pipelineIndex);
 
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("Pipeline", robot.getLimelightPipelineIndex());
         telemetry.update();
+    }
 
-        waitForStart();
+    @Override
+    public void start() {
+        robot.startLimelight();
+    }
 
-        while (opModeIsActive()) {
-            LLResult result = limelight.getLatestResult();
-            if (result != null && result.isValid()) {
-                telemetry.addData("tx", "%4.2f", result.getTx());
-                telemetry.addData("ty", "%4.2f", result.getTy());
-                telemetry.addData("ta", "%4.2f", result.getTa());
-            } else {
-                telemetry.addData("tx", "N/A");
-                telemetry.addData("ty", "N/A");
-                telemetry.addData("ta", "N/A");
-            }
-
-            telemetry.update();
-
-            // small delay to avoid spamming the CPU
-            sleep(50);
+    @Override
+    public void loop() {
+        LLResult result = robot.getLimelightResult();
+        if (result != null) {
+            telemetry.addData("Target X Offset (tx)", "%4.2f", result.getTx());
+            telemetry.addData("Target Y Offset (ty)", "%4.2f", result.getTy());
+            telemetry.addData("Target Area Offset (ta)", "%4.2f", result.getTa());
+        } else {
+            telemetry.addData("DEBUG", "No valid target detected");
         }
 
-        // stop limelight polling on exit
-        limelight.stop();
+        telemetry.addData("Pipeline", robot.getLimelightPipelineIndex());
+        telemetry.update();
+    }
+
+    @Override
+    public void stop() {
+        robot.stopLimelight();
     }
 }
