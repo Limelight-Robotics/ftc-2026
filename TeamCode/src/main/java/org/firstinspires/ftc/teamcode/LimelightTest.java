@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 @Autonomous(name="Limelight3A Test", group="Sensor")
 public class LimelightTest extends OpMode {
@@ -32,9 +33,12 @@ public class LimelightTest extends OpMode {
     public void loop() {
         LLResult result = robot.getLimelightResult();
         if (result != null) {
+            Pose3D botPose = result.getBotpose();
             telemetry.addData("Target X Offset (tx)", "%4.2f", result.getTx());
             telemetry.addData("Target Y Offset (ty)", "%4.2f", result.getTy());
             telemetry.addData("Target Area Offset (ta)", "%4.2f", result.getTa());
+            telemetry.addData("BotPose", botPose.toString());
+            telemetry.addData("Yaw", botPose.getOrientation().getYaw());
         } else {
             telemetry.addData("DEBUG", "No valid target detected");
         }
