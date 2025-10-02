@@ -22,8 +22,8 @@ public class Robot {
     private double lastYaw = 0;
 
     // limelight specific variables
-    public Limelight3A limelight = null;
-    private Integer limelightPipelineIndex = 0;
+    private Limelight3A limelight = null;
+    private int limelightPipelineIndex = 0;
 
     public void init(HardwareMap hardwareMap) {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "fL");
@@ -44,21 +44,18 @@ public class Robot {
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
-    public void initLimelight(HardwareMap hardwareMap, String name, Integer pipelineIndex) {
+    public void initLimelight(HardwareMap hardwareMap, String name, int pipelineIndex) {
         this.limelight = hardwareMap.get(Limelight3A.class, name);
         this.limelightPipelineIndex = pipelineIndex;
         this.limelight.pipelineSwitch(limelightPipelineIndex);
     }
 
-    public Integer getLimelightPipelineIndex() {
+    public int getLimelightPipelineIndex() {
         return limelightPipelineIndex;
     }
 
-    public void setLimelightPipelineIndex(Integer pipelineIndex) {
-        if (limelight != null && pipelineIndex != null && !pipelineIndex.equals(limelightPipelineIndex)) {
-            limelight.pipelineSwitch(pipelineIndex);
-            limelightPipelineIndex = pipelineIndex;
-        }
+    public void setLimelightPipelineIndex(int pipelineIndex) {
+        this.limelightPipelineIndex = pipelineIndex;
     }
 
     public void startLimelight() {
