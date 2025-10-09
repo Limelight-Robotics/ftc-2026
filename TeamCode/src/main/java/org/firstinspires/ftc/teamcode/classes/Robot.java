@@ -22,9 +22,9 @@ public class Robot {
     private static final double YAW_GAIN = 0.03; // For rotation
     
     // Power limits
-    private static final double MAX_AXIAL_POWER = 0.6;
-    private static final double MAX_LATERAL_POWER = 0.6;
-    private static final double MAX_YAW_POWER = 0.4;
+    private static final double MAX_AXIAL_POWER = 1.0;
+    private static final double MAX_LATERAL_POWER = 1.0;
+    private static final double MAX_YAW_POWER = 1.0;
     
     // Minimum power to overcome friction
     private static final double MIN_POWER = 0.15;
@@ -106,7 +106,7 @@ public class Robot {
      */
     public void driveWithGamepad(double axial, double lateral, double yaw) {
         // Store requested inputs for telemetry
-        lastAxial = axial;
+        lastAxial = -axial;
         lastLateral = lateral;
         lastYaw = yaw;
 
@@ -140,7 +140,7 @@ public class Robot {
         double lateralPower = calculateLateralPower(targetData.yPosition);
         double yawPower = calculateYawPower(targetData.botPose.getOrientation().getYaw());
 
-        drive(-axialPower, -lateralPower, yawPower);
+        drive(-axialPower, lateralPower, yawPower);
 
         boolean atTarget = isAtTarget(targetData.xPosition, targetData.yPosition, 
                                       targetData.botPose.getOrientation().getYaw());
