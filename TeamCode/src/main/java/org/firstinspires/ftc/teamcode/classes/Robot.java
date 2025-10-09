@@ -273,6 +273,7 @@ public class Robot {
                 lastFrontLeftPower, lastFrontRightPower, lastBackLeftPower, lastBackRightPower);
         telemetry.addData("Drive Inputs", "Axial: %.2f, Lateral: %.2f, Yaw: %.2f",
                 lastAxial, lastLateral, lastYaw);
+        telemetry.update();
     }
 
     // Getters for telemetry

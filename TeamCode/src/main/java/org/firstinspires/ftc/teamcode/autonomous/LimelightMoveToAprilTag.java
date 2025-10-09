@@ -17,10 +17,6 @@ public class LimelightMoveToAprilTag extends OpMode {
     public void init() {
         robot.init(hardwareMap);
         vision.init(hardwareMap, "limelight", Vision.Pipeline.APRIL_TAG);
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.addData("Pipeline", vision.getCurrentPipeline().getDescription());
-        telemetry.update();
     }
 
     @Override
@@ -34,23 +30,17 @@ public class LimelightMoveToAprilTag extends OpMode {
         Vision.TargetData targetData = vision.processFrame();
 
         // Display vision telemetry
-        vision.displayTelemetry(telemetry, targetData);
+        //vision.displayTelemetry(telemetry, targetData);
 
         // Use robot's movement logic
         if (targetData.isAcquired) {
             Robot.MovementResult movementResult = robot.moveToAprilTag(targetData);
-            telemetry.addData("Action", movementResult.status);
-            telemetry.addData("Powers", "Axial: %.2f, Lateral: %.2f, Yaw: %.2f",
-                    movementResult.axialPower, movementResult.lateralPower, movementResult.yawPower);
         } else {
             robot.stopMovement();
-            telemetry.addData("Action", "Stopped - No target detected");
         }
 
         // Display robot telemetry
         robot.displayTelemetry(telemetry);
-
-        telemetry.update();
     }
 
     @Override
