@@ -10,6 +10,15 @@ echo "FTC Robot Controller - Build & Deploy"
 echo "======================================"
 echo ""
 
+# Set JAVA_HOME to Java 17 for compatibility with Android Gradle Plugin 8.7.3
+# Only apply this configuration for Zander
+GIT_USERNAME=$(git config user.name)
+if [ "$GIT_USERNAME" = "Zander Lewis" ]; then
+    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+    echo "🔧 Using Java 17: $JAVA_HOME"
+    echo ""
+fi
+
 # Build the APK
 echo "📦 Building APK..."
 ./gradlew assembleDebug -x lint -x lintVitalAnalyzeRelease -x lintVitalReportRelease
@@ -25,15 +34,15 @@ echo ""
 
 # Check for connected devices
 echo "🔍 Checking for connected devices..."
-DEVICES=$(adb devices | grep -v "List of devices" | grep "device$" | wc -l)
+DEVICE=$(adb devices | grep -v "List of devices" | grep "device$" | head -n 1 | awk '{print $1}')
 
-if [ $DEVICES -eq 0 ]; then
+if [ -z "$DEVICE" ]; then
     echo "❌ No FTC robot connected via ADB!"
     echo "Please connect your robot and try again."
     exit 1
 fi
 
-echo "✅ Found $DEVICES connected device(s)"
+echo "✅ Using device: $DEVICE"
 echo ""
 
 # Install the APK
@@ -45,7 +54,7 @@ if [ ! -f "$APK_PATH" ]; then
     exit 1
 fi
 
-adb install -r "$APK_PATH"
+adb -s "$DEVICE" install -r "$APK_PATH"
 
 if [ $? -eq 0 ]; then
     echo ""
