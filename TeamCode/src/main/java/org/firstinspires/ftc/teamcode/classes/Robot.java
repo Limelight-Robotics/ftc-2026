@@ -106,7 +106,7 @@ public class Robot {
      */
     public void driveWithGamepad(double axial, double lateral, double yaw) {
         // Store requested inputs for telemetry
-        lastAxial = -axial;
+        lastAxial = axial;
         lastLateral = lateral;
         lastYaw = yaw;
 
