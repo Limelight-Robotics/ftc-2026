@@ -230,29 +230,6 @@ public class Vision {
      * Display vision telemetry data
      */
     public void displayTelemetry(Telemetry telemetry, TargetData targetData) {
-        if (targetData.result != null) {
-            telemetry.addData("Target X Offset (tx)", "%.2f", targetData.result.getTx());
-            telemetry.addData("Target Y Offset (ty)", "%.2f", targetData.result.getTy());
-            telemetry.addData("Target Area Offset (ta)", "%.2f", targetData.result.getTa());
-
-            // Only display bot pose for April Tag pipeline
-            if (targetData.botPose != null && currentPipeline == Pipeline.APRIL_TAG) {
-                telemetry.addData("BotPose", targetData.botPose.toString());
-                telemetry.addData("Yaw", "%.2f", targetData.botPose.getOrientation().getYaw());
-                telemetry.addData("X (Raw)", "%.2f", targetData.rawX);
-                telemetry.addData("X (Averaged)", "%.2f", targetData.xPosition);
-                telemetry.addData("Y (Raw)", "%.2f", targetData.rawY);
-                telemetry.addData("Y (Averaged)", "%.2f", targetData.yPosition);
-                telemetry.addData("Z (Raw)", "%.2f", targetData.rawZ);
-                telemetry.addData("Z (Averaged)", "%.2f", targetData.zPosition);
-            }
-
-            telemetry.addData("Valid Frames", validFrameCount);
-        } else {
-            telemetry.addData("DEBUG", "No valid target detected");
-            telemetry.addData("No Target Frames", targetData.consecutiveNoTargetFrames);
-        }
-
         telemetry.addData("Pipeline", "%s (%d)", currentPipeline.getDescription(), currentPipeline.getIndex());
     }
 

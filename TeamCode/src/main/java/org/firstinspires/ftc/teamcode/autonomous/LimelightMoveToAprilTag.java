@@ -15,8 +15,7 @@ public class LimelightMoveToAprilTag extends OpMode {
 
     @Override
     public void init() {
-        robot.init(hardwareMap);
-        vision.init(hardwareMap, "limelight", Vision.Pipeline.APRIL_TAG);
+        robot.init(hardwareMap, vision);
     }
 
     @Override
@@ -30,7 +29,7 @@ public class LimelightMoveToAprilTag extends OpMode {
         Vision.TargetData targetData = vision.processFrame();
 
         // Display vision telemetry
-        //vision.displayTelemetry(telemetry, targetData);
+        vision.displayTelemetry(telemetry, targetData);
 
         // Use robot's movement logic
         if (targetData.isAcquired) {

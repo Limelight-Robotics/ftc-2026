@@ -46,24 +46,36 @@ public class Robot {
     private double lastLateral = 0;
     private double lastYaw = 0;
 
+    // Vision system (optional, can be null)
+    private Vision vision = null;
+
     /**
      * Initialize robot hardware
      */
     public void init(HardwareMap hardwareMap) {
+        init(hardwareMap, null);
+    }
+
+    public void init(HardwareMap hardwareMap, Vision vision) {
         // Initialize drive motors
         frontLeftDrive = hardwareMap.get(DcMotor.class, "fL");
         backLeftDrive = hardwareMap.get(DcMotor.class, "bL");
         frontRightDrive = hardwareMap.get(DcMotor.class, "fR");
         backRightDrive = hardwareMap.get(DcMotor.class, "bR");
 
+        // Initialize vision system
+        this.vision = vision;
+        if (this.vision != null) {
+            this.vision.init(hardwareMap, "limelight", Vision.Pipeline.APRIL_TAG);
+        }
         // Validate motor configuration
         validateMotors();
 
         // Set motor directions
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
     /**
@@ -128,29 +140,73 @@ public class Robot {
      * Move towards an April Tag target automatically
      * BotPose coordinates: X = forward/back, Y = left/right, Z = up/down
      * Yaw = rotation angle to face the tag
+     *
+     * Modified: ignore vision and just drive forward.
      */
     public MovementResult moveToAprilTag(Vision.TargetData targetData) {
-        if (!targetData.isAcquired) {
+        // If there's no target data, do nothing
+        if (targetData == null || !targetData.isAcquired) {
             stopMovement();
-            return new MovementResult(false, "No target acquired", 0.0, 0.0, 0.0);
+            return new MovementResult(false, "No target", 0.0, 0.0, 0.0);
         }
 
-        // Calculate power for each axis using proportional control
-        double axialPower = calculateAxialPower(targetData.xPosition);
-        double lateralPower = calculateLateralPower(targetData.yPosition);
-        double yawPower = calculateYawPower(targetData.botPose.getOrientation().getYaw());
+        // Use averaged positions from Vision.TargetData
+        // In Vision.TargetData: xPosition = forward/back (meters), yPosition = left/right (meters)
+        double xPos = targetData.xPosition; // forward (positive = ahead)
+        double yPos = targetData.yPosition; // right (positive = right)
 
-        drive(-axialPower, lateralPower, yawPower);
+        // Determine yaw error. Try to use botPose if available for orientation.
+        // Determine yaw error using Limelight's tx. Limelight's tx is positive when the
+        // target is to the right. Use tx directly so commandedYaw = sign(tx) turns toward tag.
+        double tx = 0.0;
+        if (targetData.result != null) {
+            try {
+                tx = targetData.result.getTx();
+            } catch (Exception ignored) {
+                tx = 0.0;
+            }
+        }
 
-        boolean atTarget = isAtTarget(targetData.xPosition, targetData.yPosition, 
-                                      targetData.botPose.getOrientation().getYaw());
-        @SuppressLint("DefaultLocale") String status = atTarget ?
-            String.format("Target reached! X: %.2fm, Y: %.2fm, Yaw: %.1f°",
-                targetData.xPosition, targetData.yPosition, targetData.botPose.getOrientation().getYaw()) :
-            String.format("Moving - X: %.2fm, Y: %.2fm, Yaw: %.1f°", 
-                targetData.xPosition, targetData.yPosition, targetData.botPose.getOrientation().getYaw());
+        double yawError = tx; // positive = target is to the right
 
-        return new MovementResult(atTarget, status, axialPower, lateralPower, yawPower);
+        // Use constant powers as requested (simple on/off control)
+        final double AXIAL_CONST = 0.30;   // meters -> motor power (negated for forward)
+        final double LATERAL_CONST = 0.20;
+        final double YAW_CONST = 0.20;
+
+        // Axial: move forward/back based on xPos (positive xPos = target ahead)
+        double commandedAxial = 0.0;
+        if (xPos > TARGET_DISTANCE_THRESHOLD) {
+            commandedAxial = AXIAL_CONST; // negative axial moves forward toward tag
+        } else if (xPos < -TARGET_DISTANCE_THRESHOLD) {
+            commandedAxial = -AXIAL_CONST; // move backward
+        }
+
+        // Lateral: if target is offset, strafe to center. Use same sign convention as calculateLateralPower
+        double commandedLateral = 0.0;
+        if (Math.abs(yPos) > LATERAL_TOLERANCE) {
+            commandedLateral = -Math.signum(yPos) * LATERAL_CONST; // negative to correct right-offset
+        }
+
+        // Yaw: turn toward tag. yawError is in degrees; positive means tag is to the right
+        double commandedYaw = 0.0;
+        if (Math.abs(yawError) > YAW_TOLERANCE) {
+            commandedYaw = Math.signum(yawError) * YAW_CONST;
+        }
+
+        // Drive with the constant commands
+        drive(commandedAxial, commandedLateral, commandedYaw);
+
+        // Update telemetry tracking
+        lastAxial = commandedAxial;
+        lastLateral = commandedLateral;
+        lastYaw = commandedYaw;
+        updateTelemetryPowers();
+
+    boolean atTarget = isAtTarget(xPos, yPos, yawError);
+        String status = atTarget ? "At target" : "Moving to tag";
+
+        return new MovementResult(atTarget, status, commandedAxial, commandedLateral, commandedYaw);
     }
 
     /**
@@ -269,10 +325,25 @@ public class Robot {
      * Display robot telemetry
      */
     public void displayTelemetry(Telemetry telemetry) {
+        if (telemetry == null) return;
+
         telemetry.addData("Drive Powers", "FL: %.2f, FR: %.2f, BL: %.2f, BR: %.2f",
                 lastFrontLeftPower, lastFrontRightPower, lastBackLeftPower, lastBackRightPower);
         telemetry.addData("Drive Inputs", "Axial: %.2f, Lateral: %.2f, Yaw: %.2f",
                 lastAxial, lastLateral, lastYaw);
+
+        if (vision == null) {
+            telemetry.addData("Vision", "None");
+        } else {
+            Object latest = null;
+            try {
+                latest = vision.getLatestResult();
+            } catch (Exception ignored) {
+                latest = null;
+            }
+            telemetry.addData("Vision", latest == null ? "None" : latest.toString());
+        }
+
         telemetry.update();
     }
 
