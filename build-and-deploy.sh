@@ -5,6 +5,21 @@
 
 set -e  # Exit on error
 
+START_TIME=$(date +%s)
+
+print_elapsed() {
+    status=$?
+    end_time=$(date +%s)
+    elapsed=$((end_time - START_TIME))
+    h=$((elapsed / 3600))
+    m=$(((elapsed % 3600) / 60))
+    s=$((elapsed % 60))
+    printf "\n⏱ Elapsed time: %02d:%02d:%02d\n" "$h" "$m" "$s"
+    # preserve original exit status for callers/tools
+    return $status
+}
+trap 'print_elapsed' EXIT
+
 echo "======================================"
 echo "FTC Robot Controller - Build & Deploy"
 echo "======================================"
