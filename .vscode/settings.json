@@ -1,0 +1,8 @@
+{
+    "editor.formatOnSave": true,
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java"
+    },
+    "java.format.settings.url": "file://${workspaceFolder}/eclipse-formatter.xml",
+    "java.format.settings.enabled": true
+}
