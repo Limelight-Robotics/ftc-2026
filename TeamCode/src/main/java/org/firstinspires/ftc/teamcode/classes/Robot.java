@@ -28,6 +28,23 @@ public interface Robot {
     org.firstinspires.ftc.teamcode.classes.robot.RobotStatus getStatus();
 
     /**
+     * Cycle the drive motor direction preset (useful for diagnosing motor
+     * wiring/direction). Implementations should apply the preset immediately.
+     */
+    void cycleDriveDirectionPreset();
+
+    /**
+     * Return the currently selected drive direction preset index (0-based).
+     */
+    int getDriveDirectionPreset();
+
+    /**
+     * Return a human-readable description of the current drive direction preset
+     * and per-motor directions (e.g. "DEFAULT: FL=REV FR=FWD BL=REV BR=FWD").
+     */
+    String getDriveDirectionString();
+
+    /**
      * Factory helper so callers can obtain the default implementation
      * without importing or referencing the concrete class.
      */

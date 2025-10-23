@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.classes.Robot;
 public class ManualDrive extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private final Robot robot = Robot.createDefault();
+    // Button edge state for cycling direction presets
+    private boolean lastDpadUp = false;
 
     @Override
     public void runOpMode() {
@@ -23,6 +25,15 @@ public class ManualDrive extends LinearOpMode {
             double lateral = gamepad1.left_stick_x;
             double yaw = gamepad1.right_stick_x;
             robot.driveWithGamepad(axial, lateral, yaw);
+
+            // Cycle direction preset on rising edge of dpad_up
+            boolean dpadUp = gamepad1.dpad_up;
+            if (dpadUp && !lastDpadUp) {
+                robot.cycleDriveDirectionPreset();
+                telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
+                telemetry.update();
+            }
+            lastDpadUp = dpadUp;
 
             updateTelemetry(axial, lateral, yaw);
         }
@@ -44,6 +55,7 @@ public class ManualDrive extends LinearOpMode {
         if (t != null && t.isAcquired) {
             telemetry.addData("Target (X,Y,Z)", "%.2f, %.2f, %.2f", t.xPosition, t.yPosition, t.zPosition);
         }
+        telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
         telemetry.update();
     }
 }

@@ -108,6 +108,21 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
     }
 
     @Override
+    public void cycleDriveDirectionPreset() {
+        drive.cycleDirectionPreset();
+    }
+
+    @Override
+    public int getDriveDirectionPreset() {
+        return drive.getDirectionPreset();
+    }
+
+    @Override
+    public String getDriveDirectionString() {
+        return drive.getDirectionString();
+    }
+
+    @Override
     public org.firstinspires.ftc.teamcode.classes.robot.RobotStatus getStatus() {
         return new RobotStatusImpl();
     }

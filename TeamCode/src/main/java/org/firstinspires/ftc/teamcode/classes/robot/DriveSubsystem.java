@@ -13,15 +13,16 @@ public class DriveSubsystem {
     private DcMotor backLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor backRightDrive;
+
     // Hardware names
     private static final String MOTOR_FRONT_LEFT = "fL";
     private static final String MOTOR_BACK_LEFT = "bL";
     private static final String MOTOR_FRONT_RIGHT = "fR";
     private static final String MOTOR_BACK_RIGHT = "bR";
 
-    // Default motor directions (tested-correct preset FL_FR_FLIP)
-    private static final DcMotor.Direction MOTOR_DIR_FRONT_LEFT = DcMotor.Direction.FORWARD;
-    private static final DcMotor.Direction MOTOR_DIR_FRONT_RIGHT = DcMotor.Direction.REVERSE;
+    // Default motor directions
+    private static final DcMotor.Direction MOTOR_DIR_FRONT_LEFT = DcMotor.Direction.REVERSE;
+    private static final DcMotor.Direction MOTOR_DIR_FRONT_RIGHT = DcMotor.Direction.FORWARD;
     private static final DcMotor.Direction MOTOR_DIR_BACK_LEFT = DcMotor.Direction.REVERSE;
     private static final DcMotor.Direction MOTOR_DIR_BACK_RIGHT = DcMotor.Direction.FORWARD;
 
@@ -29,6 +30,10 @@ public class DriveSubsystem {
     private double lastFrontRightPower = 0.0;
     private double lastBackLeftPower = 0.0;
     private double lastBackRightPower = 0.0;
+
+    // Direction preset bitmask (0..15). Bits: 0=FL,1=FR,2=BL,3=BR. Start with the
+    // tested-correct FL_FR_FLIP (0x3).
+    private int directionPreset = 0;
 
     public void init(HardwareMap hardwareMap) {
         if (hardwareMap == null)
@@ -40,14 +45,99 @@ public class DriveSubsystem {
         if (frontLeftDrive == null || backLeftDrive == null || frontRightDrive == null || backRightDrive == null) {
             throw new IllegalStateException("Missing drive motor(s) in hardware map");
         }
-        // Apply the known-good motor directions (FL_FR_FLIP)
-        frontLeftDrive.setDirection(MOTOR_DIR_FRONT_LEFT);
-        frontRightDrive.setDirection(MOTOR_DIR_FRONT_RIGHT);
-        backLeftDrive.setDirection(MOTOR_DIR_BACK_LEFT);
-        backRightDrive.setDirection(MOTOR_DIR_BACK_RIGHT);
+
+        // Apply the configured direction preset (per-motor)
+        applyDirectionPreset();
     }
 
-    // No runtime presets — directions are fixed above.
+    /** Cycle through 16 per-motor direction combinations. */
+    public void cycleDirectionPreset() {
+        directionPreset = (directionPreset + 1) % 16;
+        applyDirectionPreset();
+    }
+
+    public int getDirectionPreset() {
+        return directionPreset;
+    }
+
+    private void applyDirectionPreset() {
+        boolean flBit = (directionPreset & 0x1) != 0;
+        boolean frBit = (directionPreset & 0x2) != 0;
+        boolean blBit = (directionPreset & 0x4) != 0;
+        boolean brBit = (directionPreset & 0x8) != 0;
+
+        DcMotor.Direction flBase = MOTOR_DIR_FRONT_LEFT;
+        DcMotor.Direction frBase = MOTOR_DIR_FRONT_RIGHT;
+        DcMotor.Direction blBase = MOTOR_DIR_BACK_LEFT;
+        DcMotor.Direction brBase = MOTOR_DIR_BACK_RIGHT;
+
+        frontLeftDrive.setDirection(flBit ? invertDirection(flBase) : flBase);
+        frontRightDrive.setDirection(frBit ? invertDirection(frBase) : frBase);
+        backLeftDrive.setDirection(blBit ? invertDirection(blBase) : blBase);
+        backRightDrive.setDirection(brBit ? invertDirection(brBase) : brBase);
+    }
+
+    private DcMotor.Direction invertDirection(DcMotor.Direction d) {
+        return (d == DcMotor.Direction.FORWARD) ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD;
+    }
+
+    /**
+     * Human-readable preset description and per-motor directions.
+     */
+    public String getDirectionString() {
+        boolean flBit = (directionPreset & 0x1) != 0;
+        boolean frBit = (directionPreset & 0x2) != 0;
+        boolean blBit = (directionPreset & 0x4) != 0;
+        boolean brBit = (directionPreset & 0x8) != 0;
+
+        DcMotor.Direction fl = flBit ? invertDirection(MOTOR_DIR_FRONT_LEFT) : MOTOR_DIR_FRONT_LEFT;
+        DcMotor.Direction fr = frBit ? invertDirection(MOTOR_DIR_FRONT_RIGHT) : MOTOR_DIR_FRONT_RIGHT;
+        DcMotor.Direction bl = blBit ? invertDirection(MOTOR_DIR_BACK_LEFT) : MOTOR_DIR_BACK_LEFT;
+        DcMotor.Direction br = brBit ? invertDirection(MOTOR_DIR_BACK_RIGHT) : MOTOR_DIR_BACK_RIGHT;
+
+        String name = presetName(directionPreset);
+        return String.format("%s: FL=%s FR=%s BL=%s BR=%s", name, fl.toString(), fr.toString(), bl.toString(),
+                br.toString());
+    }
+
+    private String presetName(int idx) {
+        switch (idx) {
+            case 0:
+                return "DEFAULT";
+            case 1:
+                return "FL_FLIP";
+            case 2:
+                return "FR_FLIP";
+            case 3:
+                return "FL_FR_FLIP";
+            case 4:
+                return "BL_FLIP";
+            case 5:
+                return "FL_BL_FLIP";
+            case 6:
+                return "FR_BL_FLIP";
+            case 7:
+                return "FL_FR_BL_FLIP";
+            case 8:
+                return "BR_FLIP";
+            case 9:
+                return "FL_BR_FLIP";
+            case 10:
+                return "FR_BR_FLIP";
+            case 11:
+                return "FL_FR_BR_FLIP";
+            case 12:
+                return "BL_BR_FLIP";
+            case 13:
+                return "FL_BL_BR_FLIP";
+            case 14:
+                return "FR_BL_BR_FLIP";
+            case 15:
+                return "ALL_FLIP";
+            default:
+                return String.format("0x%X", idx);
+        }
+    }
 
     public void drive(double axial, double lateral, double yaw) {
         double fl = axial + lateral + yaw;
