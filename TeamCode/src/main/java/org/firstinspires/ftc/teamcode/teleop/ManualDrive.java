@@ -29,7 +29,8 @@ public class ManualDrive extends LinearOpMode {
         ToggleManager toggleManager = new ToggleManager();
 
         intakeToggle.setOnChange(on -> {
-            robot.setIntakePower(on ? 1.0 : 0.0);
+            // When the toggle turns on, apply the assigned power (set via update)
+            robot.setIntakePower(on ? intakeToggle.getAssignedPower() : 0.0);
             telemetry.addData("IntakeState", on ? "ON" : "OFF");
             telemetry.update();
         });
@@ -46,8 +47,8 @@ public class ManualDrive extends LinearOpMode {
             double yaw = gamepad1.right_stick_x;
             robot.driveWithGamepad(axial, lateral, yaw);
 
-            // Update toggles using rising-edge detection.
-            intakeToggle.update(gamepad1.a);
+            intakeToggle.update(gamepad1.a, 1.0); // Forward (toggle on/off)
+            intakeToggle.update(gamepad1.b, -1.0); // Reverse (toggle on/off)
 
             // Show toggle states (manager) and then other telemetry
             toggleManager.writeToTelemetry(telemetry);
