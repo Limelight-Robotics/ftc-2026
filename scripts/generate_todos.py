@@ -90,10 +90,15 @@ def write_md(todos, out_path: Path, root: Path):
         grouped.setdefault(str(relpath), []).append((lineno, line, author))
 
     lines = [header]
-    for path in sorted(grouped.keys()):
-        lines.append(f"## {path}\n")
-        for lineno, line, author in grouped[path]:
-            target = f"{root}/{path}#L{lineno}"
+    # Common prefix we want to shorten for display (don't use str.strip)
+    prefix = 'src/main/java/org/firstinspires/ftc/teamcode/'
+    for orig_path in sorted(grouped.keys()):
+        display_path = orig_path
+        if display_path.startswith(prefix):
+            display_path = display_path[len(prefix):]
+        lines.append(f"## [{display_path}](TeamCode/{orig_path})\n")
+        for lineno, line, author in grouped[orig_path]:
+            target = f"{root}/{display_path}#L{lineno}"
             lines.append(f"- [Line {lineno}]({target}):\n\n    {line}\n")
             if author:
                 lines.append(f"    - Assigned to: {author}\n")
