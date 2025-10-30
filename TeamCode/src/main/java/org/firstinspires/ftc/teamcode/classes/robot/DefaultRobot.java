@@ -12,6 +12,7 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
     private Vision vision;
     private Vision.TargetData cameraData;
     private double lastAxial, lastLateral, lastYaw;
+
     // Movement tuning constants
     private static final double AXIAL_TOLERANCE = 0.15;
     private static final double LATERAL_TOLERANCE = 0.05;
@@ -110,6 +111,11 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
     @Override
     public void cycleDriveDirectionPreset() {
         drive.cycleDirectionPreset();
+    }
+
+    @Override
+    public void cycleDriveDirectionPreset(int delta) {
+        drive.cycleDirectionPreset(delta);
     }
 
     @Override

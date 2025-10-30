@@ -12,6 +12,7 @@ public class ManualDrive extends LinearOpMode {
     private final Robot robot = Robot.createDefault();
     // Button edge state for cycling direction presets
     private boolean lastDpadUp = false;
+    private boolean lastDpadDown = false;
 
     @Override
     public void runOpMode() {
@@ -28,12 +29,18 @@ public class ManualDrive extends LinearOpMode {
 
             // Cycle direction preset on rising edge of dpad_up
             boolean dpadUp = gamepad1.dpad_up;
+            boolean dpadDown = gamepad1.dpad_down;
             if (dpadUp && !lastDpadUp) {
-                robot.cycleDriveDirectionPreset();
+                robot.cycleDriveDirectionPreset(1);
+                telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
+                telemetry.update();
+            } else if (dpadDown && !lastDpadDown) {
+                robot.cycleDriveDirectionPreset(-1);
                 telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
                 telemetry.update();
             }
             lastDpadUp = dpadUp;
+            lastDpadDown = dpadDown;
 
             updateTelemetry(axial, lateral, yaw);
         }

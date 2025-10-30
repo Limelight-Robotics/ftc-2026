@@ -28,10 +28,10 @@ public interface Robot {
     org.firstinspires.ftc.teamcode.classes.robot.RobotStatus getStatus();
 
     /**
-     * Cycle the drive motor direction preset (useful for diagnosing motor
-     * wiring/direction). Implementations should apply the preset immediately.
+     * Cycle the drive motor direction preset by the specified delta.
+     * Positive values advance, negative values go backwards.
      */
-    void cycleDriveDirectionPreset();
+    void cycleDriveDirectionPreset(int delta);
 
     /**
      * Return the currently selected drive direction preset index (0-based).

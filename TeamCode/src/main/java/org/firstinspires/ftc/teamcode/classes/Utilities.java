@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.classes;
 
 public final class Utilities {
     private Utilities() {
-        // Prevent instantiation
     }
 
     /**
@@ -15,6 +14,11 @@ public final class Utilities {
         max = Math.max(max, Math.abs(br));
         if (max <= 1.0)
             return new double[] { fl, fr, bl, br };
-        return new double[] { fl / max, fr / max, bl / max, br / max };
+        return new double[] {
+                fl / max,
+                fr / max,
+                bl / max,
+                br / max
+        };
     }
 }
