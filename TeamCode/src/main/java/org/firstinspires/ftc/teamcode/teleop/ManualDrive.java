@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.classes.Robot;
+import org.firstinspires.ftc.teamcode.util.Toggle;
+import org.firstinspires.ftc.teamcode.util.ToggleManager;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "Manual Drive", group = "Linear OpMode")
 public class ManualDrive extends LinearOpMode {
@@ -20,6 +23,19 @@ public class ManualDrive extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+
+        // Create toggles. Press A to toggle intake.
+        Toggle intakeToggle = new Toggle(false);
+        ToggleManager toggleManager = new ToggleManager();
+
+        intakeToggle.setOnChange(on -> {
+            robot.setIntakePower(on ? 1.0 : 0.0);
+            telemetry.addData("IntakeState", on ? "ON" : "OFF");
+            telemetry.update();
+        });
+
+        // Register toggles for centralized telemetry display
+        toggleManager.register("Intake", intakeToggle);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -29,6 +45,12 @@ public class ManualDrive extends LinearOpMode {
             double lateral = gamepad1.left_stick_x;
             double yaw = gamepad1.right_stick_x;
             robot.driveWithGamepad(axial, lateral, yaw);
+
+            // Update toggles using rising-edge detection.
+            intakeToggle.update(gamepad1.a);
+
+            // Show toggle states (manager) and then other telemetry
+            toggleManager.writeToTelemetry(telemetry);
 
             /*
              * // Cycle direction preset on rising edge of dpad_up
@@ -68,6 +90,8 @@ public class ManualDrive extends LinearOpMode {
         if (t != null && t.isAcquired) {
             telemetry.addData("Target (X,Y,Z)", "%.2f, %.2f, %.2f", t.xPosition, t.yPosition, t.zPosition);
         }
+        // Intake power from RobotStatus
+        telemetry.addData("IntakePower", "%.2f", status.getIntakePower());
         // telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
         telemetry.update();
     }

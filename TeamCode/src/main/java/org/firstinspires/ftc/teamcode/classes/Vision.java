@@ -41,10 +41,6 @@ public interface Vision {
         public int consecutiveNoTargetFrames = 0;
     }
 
-    /**
-     * Create the default Vision implementation (Limelight3A-backed).
-     * This keeps callers dependent on the Vision interface only.
-     */
     static Vision createDefault() {
         return new org.firstinspires.ftc.teamcode.classes.vision.LimelightVision();
     }

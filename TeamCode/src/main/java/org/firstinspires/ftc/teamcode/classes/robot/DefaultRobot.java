@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.classes.robot;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.classes.Vision;
 
 /**
@@ -12,6 +13,8 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
     private Vision vision;
     private Vision.TargetData cameraData;
     private double lastAxial, lastLateral, lastYaw;
+    private DcMotor intakeMotor = null;
+    private double intakePower = 0.0;
 
     // Movement tuning constants
     private static final double AXIAL_TOLERANCE = 0.15;
@@ -27,6 +30,12 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
     @Override
     public void init(HardwareMap hardwareMap, Vision vision) {
         drive.init(hardwareMap);
+        try {
+            intakeMotor = hardwareMap.get(DcMotor.class, "intake");
+            intakeMotor.setPower(0.0);
+        } catch (Exception ignored) {
+            intakeMotor = null;
+        }
         this.vision = vision;
         if (this.vision != null)
             this.vision.init(hardwareMap, "limelight", Vision.Pipeline.APRIL_TAG);
@@ -132,6 +141,21 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
         return new RobotStatusImpl();
     }
 
+    @Override
+    public void setIntakePower(double power) {
+        intakePower = clamp(power);
+        if (intakeMotor != null)
+            intakeMotor.setPower(intakePower);
+    }
+
+    private double clamp(double v) {
+        if (v > 1.0)
+            return 1.0;
+        if (v < -1.0)
+            return -1.0;
+        return v;
+    }
+
     private class RobotStatusImpl implements org.firstinspires.ftc.teamcode.classes.robot.RobotStatus {
         @Override
         public double getFrontLeftPower() {
@@ -171,6 +195,11 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
         @Override
         public Vision.TargetData getLastTargetData() {
             return cameraData;
+        }
+
+        @Override
+        public double getIntakePower() {
+            return intakePower;
         }
     }
 }

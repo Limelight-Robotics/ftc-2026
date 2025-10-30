@@ -22,4 +22,6 @@ public interface RobotStatus {
     double getLastYaw();
 
     Vision.TargetData getLastTargetData();
+
+    double getIntakePower();
 }
