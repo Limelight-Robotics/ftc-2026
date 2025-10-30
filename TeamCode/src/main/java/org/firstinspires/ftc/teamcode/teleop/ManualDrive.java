@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.classes.Robot;
 public class ManualDrive extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private final Robot robot = Robot.createDefault();
+
     // Button edge state for cycling direction presets
     private boolean lastDpadUp = false;
     private boolean lastDpadDown = false;
@@ -51,6 +52,7 @@ public class ManualDrive extends LinearOpMode {
         telemetry.addData("Axial", "%4.2f", axial);
         telemetry.addData("Lateral", "%4.2f", lateral);
         telemetry.addData("Yaw", "%4.2f", yaw);
+
         // Drive power telemetry (read from RobotStatus)
         org.firstinspires.ftc.teamcode.classes.robot.RobotStatus status = robot.getStatus();
         telemetry.addData("Drive Powers", "FL: %.2f, FR: %.2f, BL: %.2f, BR: %.2f",

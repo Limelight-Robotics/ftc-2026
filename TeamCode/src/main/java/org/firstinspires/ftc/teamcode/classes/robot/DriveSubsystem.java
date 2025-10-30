@@ -28,7 +28,6 @@ public class DriveSubsystem {
     private double lastBackRightPower = 0.0;
 
     // Direction presets are managed by DriveDirectionPresets
-
     public void init(HardwareMap hardwareMap) {
         if (hardwareMap == null)
             throw new IllegalArgumentException("hardwareMap cannot be null");

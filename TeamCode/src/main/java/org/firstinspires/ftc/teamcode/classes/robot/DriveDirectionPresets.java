@@ -37,6 +37,7 @@ public class DriveDirectionPresets {
      * is null this method will not set direction for that motor.
      */
     public void applyTo(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight) {
+        // TODO: What does this even mean? %%Zander Lewis <zander@zanderlewis.dev>%%
         boolean flBit = (preset & 0x1) != 0;
         boolean frBit = (preset & 0x2) != 0;
         boolean blBit = (preset & 0x4) != 0;
@@ -53,6 +54,7 @@ public class DriveDirectionPresets {
     }
 
     public String getPresetString() {
+        // TODO: What does this even mean? %%Zander Lewis <zander@zanderlewis.dev>%%
         String flDir = ((preset & 0x1) != 0 ? invert(FL_BASE) : FL_BASE).toString();
         String frDir = ((preset & 0x2) != 0 ? invert(FR_BASE) : FR_BASE).toString();
         String blDir = ((preset & 0x4) != 0 ? invert(BL_BASE) : BL_BASE).toString();

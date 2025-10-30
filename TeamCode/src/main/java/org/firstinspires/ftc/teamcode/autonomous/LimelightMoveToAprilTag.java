@@ -31,6 +31,7 @@ public class LimelightMoveToAprilTag extends OpMode {
         } else {
             robot.stopMovement();
         }
+
         // Render telemetry from the OpMode using RobotStatus and VisionStatus
         org.firstinspires.ftc.teamcode.classes.robot.RobotStatus status = robot.getStatus();
         telemetry.addData("Drive Powers", "FL: %.2f, FR: %.2f, BL: %.2f, BR: %.2f",
@@ -44,6 +45,7 @@ public class LimelightMoveToAprilTag extends OpMode {
                 telemetry.addData("Target (X,Y,Z)", "%.2f, %.2f, %.2f", targetData.xPosition,
                         targetData.yPosition, targetData.zPosition);
         }
+
         // Also surface vision status if needed
         org.firstinspires.ftc.teamcode.classes.vision.VisionStatus vstatus = vision.getStatus();
         if (vstatus != null) {
