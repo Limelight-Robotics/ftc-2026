@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 public class DriveDirectionPresets {
     // current preset bitmask (bits: 0=FL,1=FR,2=BL,3=BR)
-    private int preset = 3;
+    private int preset = 3 & 0xF;
 
     // Baseline directions used when a bit is 0
     private static final DcMotor.Direction FL_BASE = DcMotor.Direction.REVERSE;
