@@ -11,9 +11,11 @@ public class ManualDrive extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private final Robot robot = Robot.createDefault();
 
-    // Button edge state for cycling direction presets
-    private boolean lastDpadUp = false;
-    private boolean lastDpadDown = false;
+    /*
+     * // Button edge state for cycling direction presets
+     * private boolean lastDpadUp = false;
+     * private boolean lastDpadDown = false;
+     */
 
     @Override
     public void runOpMode() {
@@ -28,20 +30,22 @@ public class ManualDrive extends LinearOpMode {
             double yaw = gamepad1.right_stick_x;
             robot.driveWithGamepad(axial, lateral, yaw);
 
-            // Cycle direction preset on rising edge of dpad_up
-            boolean dpadUp = gamepad1.dpad_up;
-            boolean dpadDown = gamepad1.dpad_down;
-            if (dpadUp && !lastDpadUp) {
-                robot.cycleDriveDirectionPreset(1);
-                telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
-                telemetry.update();
-            } else if (dpadDown && !lastDpadDown) {
-                robot.cycleDriveDirectionPreset(-1);
-                telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
-                telemetry.update();
-            }
-            lastDpadUp = dpadUp;
-            lastDpadDown = dpadDown;
+            /*
+             * // Cycle direction preset on rising edge of dpad_up
+             * boolean dpadUp = gamepad1.dpad_up;
+             * boolean dpadDown = gamepad1.dpad_down;
+             * if (dpadUp && !lastDpadUp) {
+             * robot.cycleDriveDirectionPreset(1);
+             * telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
+             * telemetry.update();
+             * } else if (dpadDown && !lastDpadDown) {
+             * robot.cycleDriveDirectionPreset(-1);
+             * telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
+             * telemetry.update();
+             * }
+             * lastDpadUp = dpadUp;
+             * lastDpadDown = dpadDown;
+             */
 
             updateTelemetry(axial, lateral, yaw);
         }
@@ -64,7 +68,7 @@ public class ManualDrive extends LinearOpMode {
         if (t != null && t.isAcquired) {
             telemetry.addData("Target (X,Y,Z)", "%.2f, %.2f, %.2f", t.xPosition, t.yPosition, t.zPosition);
         }
-        telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
+        // telemetry.addData("DirectionPreset", robot.getDriveDirectionString());
         telemetry.update();
     }
 }

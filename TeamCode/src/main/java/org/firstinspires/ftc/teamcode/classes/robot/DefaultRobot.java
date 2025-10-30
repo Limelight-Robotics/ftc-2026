@@ -108,14 +108,13 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
         drive.stop();
     }
 
-    @Override
     public void cycleDriveDirectionPreset() {
-        drive.cycleDirectionPreset();
+        drive.cycleDriveDirectionPreset(1);
     }
 
     @Override
     public void cycleDriveDirectionPreset(int delta) {
-        drive.cycleDirectionPreset(delta);
+        drive.cycleDriveDirectionPreset(delta);
     }
 
     @Override
