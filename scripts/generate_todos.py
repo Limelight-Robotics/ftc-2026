@@ -98,7 +98,7 @@ def write_md(todos, out_path: Path, root: Path):
             display_path = display_path[len(prefix):]
         lines.append(f"## [{display_path}](TeamCode/{orig_path})\n")
         for lineno, line, author in grouped[orig_path]:
-            target = f"{root}/{display_path}#L{lineno}"
+            target = f"TeamCode/src/main/java/org/firstinspires/ftc/teamcode/{display_path}#L{lineno}"
             lines.append(f"- [Line {lineno}]({target}):\n\n    {line}\n")
             if author:
                 lines.append(f"    - Assigned to: {author}\n")
