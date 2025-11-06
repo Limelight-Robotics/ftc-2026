@@ -26,9 +26,10 @@ echo "======================================"
 echo ""
 
 # Set JAVA_HOME to Java 17 for compatibility with Android Gradle Plugin 8.7.3
-# Only apply this configuration for Zander
+# Only apply this configuration for Zander, as Omarchy Linux is finicky with this.
 GIT_USERNAME=$(git config user.name)
-if [ "$GIT_USERNAME" = "Zander Lewis" ]; then
+GIT_EMAIL=$(git config user.email)
+if [ "$GIT_USERNAME" = "Zander Lewis" ] && [ "$GIT_EMAIL" = "zander@zanderlewis.dev" ]; then
     export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
     echo "🔧 Using Java 17: $JAVA_HOME"
     echo ""
