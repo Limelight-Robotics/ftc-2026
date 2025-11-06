@@ -24,19 +24,13 @@ public class ManualDrive extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
 
-        // Create toggles. Press A to toggle intake.
-        Toggle intakeToggle = new Toggle(false);
-        ToggleManager toggleManager = new ToggleManager();
+        // Intake mode enum: REGULAR (forward), REVERSE (backward), OFF
+        enum IntakeMode {
+            REGULAR, REVERSE, OFF
+        }
+        IntakeMode intakeMode = IntakeMode.OFF;
+        boolean lastIntakeCycleButton = false;
 
-        intakeToggle.setOnChange(on -> {
-            // When the toggle turns on, apply the assigned power (set via update)
-            robot.setIntakePower(on ? intakeToggle.getAssignedPower() : 0.0);
-            telemetry.addData("IntakeState", on ? "ON" : "OFF");
-            telemetry.update();
-        });
-
-        // Register toggles for centralized telemetry display
-        toggleManager.register("Intake", intakeToggle);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -47,11 +41,41 @@ public class ManualDrive extends LinearOpMode {
             double yaw = gamepad1.right_stick_x;
             robot.driveWithGamepad(axial, lateral, yaw);
 
-            intakeToggle.update(gamepad1.a, 1.0); // Forward (toggle on/off)
-            intakeToggle.update(gamepad1.b, -1.0); // Reverse (toggle on/off)
+            // Cycle intake mode on rising edge of Y button: REGULAR -> REVERSE -> OFF ->
+            // REGULAR
+            boolean cyclePressed = gamepad1.y;
+            if (cyclePressed && !lastIntakeCycleButton) {
+                switch (intakeMode) {
+                    case REGULAR:
+                        intakeMode = IntakeMode.REVERSE;
+                        break;
+                    case REVERSE:
+                        intakeMode = IntakeMode.OFF;
+                        break;
+                    case OFF:
+                    default:
+                        intakeMode = IntakeMode.REGULAR;
+                        break;
+                }
+                telemetry.addData("IntakeMode", intakeMode.toString());
+                telemetry.update();
+            }
+            lastIntakeCycleButton = cyclePressed;
 
-            // Show toggle states (manager) and then other telemetry
-            toggleManager.writeToTelemetry(telemetry);
+            // Apply intake mode: forward (1.0) for REGULAR, reverse (-1.0) for REVERSE, off
+            // (0.0) for OFF
+            switch (intakeMode) {
+                case REGULAR:
+                    robot.setIntakePower(1.0);
+                    break;
+                case REVERSE:
+                    robot.setIntakePower(-1.0);
+                    break;
+                case OFF:
+                default:
+                    robot.setIntakePower(0.0);
+                    break;
+            }
 
             /*
              * // Cycle direction preset on rising edge of dpad_up
