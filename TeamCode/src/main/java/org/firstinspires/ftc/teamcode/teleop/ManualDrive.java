@@ -9,6 +9,10 @@ import org.firstinspires.ftc.teamcode.util.Toggle;
 import org.firstinspires.ftc.teamcode.util.ToggleManager;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+enum IntakeMode {
+    REGULAR, REVERSE, OFF
+}
+
 @TeleOp(name = "Manual Drive", group = "Linear OpMode")
 public class ManualDrive extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
@@ -25,9 +29,6 @@ public class ManualDrive extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Intake mode enum: REGULAR (forward), REVERSE (backward), OFF
-        enum IntakeMode {
-            REGULAR, REVERSE, OFF
-        }
         IntakeMode intakeMode = IntakeMode.OFF;
         boolean lastIntakeCycleButton = false;
 
