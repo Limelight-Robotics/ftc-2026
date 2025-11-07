@@ -61,11 +61,11 @@ public class DriveSubsystem {
         return directionPresets.getPresetString();
     }
 
-    public void drive(double axial, double lateral, double yaw) {
-        double fl = axial + lateral + yaw;
-        double fr = axial - lateral - yaw;
-        double bl = axial - lateral + yaw;
-        double br = axial + lateral - yaw;
+    public void drive(double forward, double strafe, double rotate) {
+        double fl = forward + strafe + rotate;
+        double fr = forward - strafe - rotate;
+        double bl = forward - strafe + rotate;
+        double br = forward + strafe - rotate;
         double[] normalized = Utilities.normalizeMecanum(fl, fr, bl, br);
         setMotorPowers(normalized);
     }

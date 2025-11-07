@@ -15,11 +15,11 @@ public interface RobotStatus {
 
     double getBackRightPower();
 
-    double getLastAxial();
+    double getLastForward();
 
-    double getLastLateral();
+    double getLastStrafe();
 
-    double getLastYaw();
+    double getLastRotate();
 
     Vision.TargetData getLastTargetData();
 

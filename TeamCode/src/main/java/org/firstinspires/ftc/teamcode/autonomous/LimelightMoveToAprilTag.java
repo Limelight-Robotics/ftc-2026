@@ -37,8 +37,8 @@ public class LimelightMoveToAprilTag extends OpMode {
         telemetry.addData("Drive Powers", "FL: %.2f, FR: %.2f, BL: %.2f, BR: %.2f",
                 status.getFrontLeftPower(), status.getFrontRightPower(), status.getBackLeftPower(),
                 status.getBackRightPower());
-        telemetry.addData("Drive Inputs", "Axial: %.2f, Lateral: %.2f, Yaw: %.2f", status.getLastAxial(),
-                status.getLastLateral(), status.getLastYaw());
+        telemetry.addData("Drive Inputs", "Forward: %.2f, Strafe: %.2f, Rotate: %.2f", status.getLastForward(),
+                status.getLastStrafe(), status.getLastRotate());
         if (targetData != null) {
             telemetry.addData("Target Acquired", "%s", targetData.isAcquired ? "YES" : "NO");
             if (targetData.isAcquired)

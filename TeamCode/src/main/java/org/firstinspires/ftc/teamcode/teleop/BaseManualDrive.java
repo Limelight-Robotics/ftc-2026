@@ -37,27 +37,35 @@ public abstract class BaseManualDrive extends LinearOpMode {
 
         while (opModeIsActive()) {
             double multiplier = getSpeedMultiplier();
-            double axial = -gamepad1.left_stick_y * multiplier;
-            double lateral = gamepad1.left_stick_x * multiplier;
-            double yaw = gamepad1.right_stick_x * multiplier;
-            robot.driveWithGamepad(axial, lateral, yaw);
+            double forward = -gamepad1.left_stick_y * multiplier;
+            double strafe = gamepad1.left_stick_x * multiplier;
+            double rotate = gamepad1.right_stick_x * multiplier;
+            robot.driveWithGamepad(forward, strafe, rotate);
 
             intakeMode = updateIntakeMode(intakeMode, gamepad1.y, lastIntakeCycleButton);
             lastIntakeCycleButton = gamepad1.y;
 
             applyIntakeMode(intakeMode);
-            updateTelemetry(axial, lateral, yaw);
+            updateTelemetry(forward, strafe, rotate);
         }
     }
 
     private IntakeMode updateIntakeMode(IntakeMode current, boolean cyclePressed,
             boolean lastPressed) {
         if (cyclePressed && !lastPressed) {
-            IntakeMode next = switch (current) {
-                case REGULAR -> IntakeMode.REVERSE;
-                case REVERSE -> IntakeMode.OFF;
-                case OFF -> IntakeMode.REGULAR;
-            };
+            IntakeMode next;
+            switch (current) {
+                case REGULAR:
+                    next = IntakeMode.REVERSE;
+                    break;
+                case REVERSE:
+                    next = IntakeMode.OFF;
+                    break;
+                case OFF:
+                default:
+                    next = IntakeMode.REGULAR;
+                    break;
+            }
             telemetry.addData("IntakeMode", next.toString());
             telemetry.update();
             return next;
@@ -66,26 +74,34 @@ public abstract class BaseManualDrive extends LinearOpMode {
     }
 
     private void applyIntakeMode(IntakeMode mode) {
-        double power = switch (mode) {
-            case REGULAR -> 1.0;
-            case REVERSE -> -1.0;
-            case OFF -> 0.0;
-        };
+        double power;
+        switch (mode) {
+            case REGULAR:
+                power = 1.0;
+                break;
+            case REVERSE:
+                power = -1.0;
+                break;
+            case OFF:
+            default:
+                power = 0.0;
+                break;
+        }
         robot.setIntakePower(power);
     }
 
-    private void updateTelemetry(double axial, double lateral, double yaw) {
+    private void updateTelemetry(double forward, double strafe, double rotate) {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Axial", "%4.2f", axial);
-        telemetry.addData("Lateral", "%4.2f", lateral);
-        telemetry.addData("Yaw", "%4.2f", yaw);
+        telemetry.addData("Forward", "%4.2f", forward);
+        telemetry.addData("Strafe", "%4.2f", strafe);
+        telemetry.addData("Rotate", "%4.2f", rotate);
 
         org.firstinspires.ftc.teamcode.classes.robot.RobotStatus status = robot.getStatus();
         telemetry.addData("Drive Powers", "FL: %.2f, FR: %.2f, BL: %.2f, BR: %.2f",
                 status.getFrontLeftPower(), status.getFrontRightPower(),
                 status.getBackLeftPower(), status.getBackRightPower());
-        telemetry.addData("Drive Inputs", "Axial: %.2f, Lateral: %.2f, Yaw: %.2f",
-                status.getLastAxial(), status.getLastLateral(), status.getLastYaw());
+        telemetry.addData("Drive Inputs", "Forward: %.2f, Strafe: %.2f, Rotate: %.2f",
+                status.getLastForward(), status.getLastStrafe(), status.getLastRotate());
 
         org.firstinspires.ftc.teamcode.classes.Vision.TargetData t = status.getLastTargetData();
         if (t != null && t.isAcquired) {

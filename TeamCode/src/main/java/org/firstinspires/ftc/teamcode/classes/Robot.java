@@ -11,11 +11,11 @@ public interface Robot {
 
     void init(HardwareMap hardwareMap, Vision vision);
 
-    void drive(double axial, double lateral, double yaw);
+    void drive(double forward, double strafe, double rotate);
 
-    void driveWithGamepad(double axial, double lateral, double yaw);
+    void driveWithGamepad(double forward, double strafe, double rotate);
 
-    void driveAutonomous(double axial, double lateral, double yaw);
+    void driveAutonomous(double forward, double strafe, double rotate);
 
     org.firstinspires.ftc.teamcode.classes.robot.MovementResult moveToAprilTag(Vision.TargetData targetData);
 

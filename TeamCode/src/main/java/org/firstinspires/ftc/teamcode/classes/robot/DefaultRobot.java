@@ -12,14 +12,14 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
     private final DriveSubsystem drive = new DriveSubsystem();
     private Vision vision;
     private Vision.TargetData cameraData;
-    private double lastAxial, lastLateral, lastYaw;
+    private double lastForward, lastStrafe, lastRotate;
     private DcMotor intakeMotor = null;
     private double intakePower = 0.0;
 
     // Movement tuning constants
-    private static final double AXIAL_TOLERANCE = 0.15;
-    private static final double LATERAL_TOLERANCE = 0.05;
-    private static final double YAW_TOLERANCE_DEG = 5.0;
+    private static final double FORWARD_TOLERANCE = 0.15;
+    private static final double STRAFE_TOLERANCE = 0.05;
+    private static final double ROTATE_TOLERANCE_DEG = 5.0;
     private static final double MAX_DRIVE_POWER = 1.0;
 
     @Override
@@ -42,22 +42,22 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
     }
 
     @Override
-    public void drive(double axial, double lateral, double yaw) {
-        drive.drive(axial, lateral, yaw);
+    public void drive(double forward, double strafe, double rotate) {
+        drive.drive(forward, strafe, rotate);
     }
 
     @Override
-    public void driveWithGamepad(double axial, double lateral, double yaw) {
-        lastAxial = axial;
-        lastLateral = lateral;
-        lastYaw = yaw;
-        drive.drive(axial, lateral, yaw);
+    public void driveWithGamepad(double forward, double strafe, double rotate) {
+        lastForward = forward;
+        lastStrafe = strafe;
+        lastRotate = rotate;
+        drive.drive(forward, strafe, rotate);
         drive.updateTelemetryPowers();
     }
 
     @Override
-    public void driveAutonomous(double axial, double lateral, double yaw) {
-        drive.drive(axial, lateral, yaw);
+    public void driveAutonomous(double forward, double strafe, double rotate) {
+        drive.drive(forward, strafe, rotate);
     }
 
     @Override
@@ -75,39 +75,39 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
         double yPos = targetData.yPosition;
         double tx = (targetData.result != null) ? targetData.result.getTx() : 0.0;
 
-        double commandedAxial = computeCommandedAxial(xPos);
-        double commandedLateral = computeCommandedLateral(yPos);
-        double commandedYaw = computeCommandedYaw(tx);
+        double commandedForward = computeCommandedForward(xPos);
+        double commandedStrafe = computeCommandedStrafe(yPos);
+        double commandedRotate = computeCommandedRotate(tx);
 
-        drive.drive(commandedAxial, commandedLateral, commandedYaw);
-        lastAxial = commandedAxial;
-        lastLateral = commandedLateral;
-        lastYaw = commandedYaw;
+        drive.drive(commandedForward, commandedStrafe, commandedRotate);
+        lastForward = commandedForward;
+        lastStrafe = commandedStrafe;
+        lastRotate = commandedRotate;
         drive.updateTelemetryPowers();
 
-        boolean atTarget = Math.abs(xPos) <= AXIAL_TOLERANCE
-                && Math.abs(yPos) <= LATERAL_TOLERANCE
-                && Math.abs(tx) <= YAW_TOLERANCE_DEG;
-        return new MovementResult(atTarget, atTarget ? "At target" : "Moving to tag", commandedAxial, commandedLateral,
-                commandedYaw);
+        boolean atTarget = Math.abs(xPos) <= FORWARD_TOLERANCE
+                && Math.abs(yPos) <= STRAFE_TOLERANCE
+                && Math.abs(tx) <= ROTATE_TOLERANCE_DEG;
+        return new MovementResult(atTarget, atTarget ? "At target" : "Moving to tag", commandedForward, commandedStrafe,
+                commandedRotate);
     }
 
-    private double computeCommandedAxial(double xPos) {
-        if (xPos > AXIAL_TOLERANCE)
+    private double computeCommandedForward(double xPos) {
+        if (xPos > FORWARD_TOLERANCE)
             return MAX_DRIVE_POWER;
-        if (xPos < -AXIAL_TOLERANCE)
+        if (xPos < -FORWARD_TOLERANCE)
             return -MAX_DRIVE_POWER;
         return 0.0;
     }
 
-    private double computeCommandedLateral(double yPos) {
-        if (Math.abs(yPos) > LATERAL_TOLERANCE)
+    private double computeCommandedStrafe(double yPos) {
+        if (Math.abs(yPos) > STRAFE_TOLERANCE)
             return -Math.signum(yPos) * MAX_DRIVE_POWER;
         return 0.0;
     }
 
-    private double computeCommandedYaw(double tx) {
-        if (Math.abs(tx) > YAW_TOLERANCE_DEG)
+    private double computeCommandedRotate(double tx) {
+        if (Math.abs(tx) > ROTATE_TOLERANCE_DEG)
             return Math.signum(tx) * MAX_DRIVE_POWER;
         return 0.0;
     }
@@ -178,18 +178,18 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
         }
 
         @Override
-        public double getLastAxial() {
-            return lastAxial;
+        public double getLastForward() {
+            return lastForward;
         }
 
         @Override
-        public double getLastLateral() {
-            return lastLateral;
+        public double getLastStrafe() {
+            return lastStrafe;
         }
 
         @Override
-        public double getLastYaw() {
-            return lastYaw;
+        public double getLastRotate() {
+            return lastRotate;
         }
 
         @Override
