@@ -4,11 +4,21 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * Encapsulates drive motor direction presets (per-motor flips) so
- * DriveSubsystem
- * can toggle or apply them cleanly.
+ * DriveSubsystem can toggle or apply them cleanly.
+ *
+ * Preset Bitmask Layout:
+ * - The preset is a 4-bit mask where each bit controls whether a motor
+ * direction is inverted from its baseline.
+ * - Bit 0 (0x1): Front Left motor flip
+ * - Bit 1 (0x2): Front Right motor flip
+ * - Bit 2 (0x4): Back Left motor flip
+ * - Bit 3 (0x8): Back Right motor flip
+ * - When a bit is 1, that motor's baseline direction is inverted.
+ * - For example, preset=3 (binary 0011) flips both Front Left and Front Right.
  */
 public class DriveDirectionPresets {
-    // current preset bitmask (bits: 0=FL,1=FR,2=BL,3=BR)
+    // 4-bit preset bitmask (bits: 0=FL, 1=FR, 2=BL, 3=BR)
+    // Each bit indicates whether to invert that motor from baseline.
     private int preset = 3 & 0xF;
 
     // Baseline directions used when a bit is 0
@@ -35,13 +45,17 @@ public class DriveDirectionPresets {
     /**
      * Apply the currently selected preset to the provided motors. If any motor
      * is null this method will not set direction for that motor.
+     *
+     * For each motor, extracts the corresponding bit from the preset bitmask:
+     * - If the bit is 1, the motor's baseline direction is inverted.
+     * - If the bit is 0, the baseline direction is used as-is.
      */
     public void applyTo(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight) {
-        // TODO: What does this even mean? %%Zander Lewis <zander@zanderlewis.dev>%%
-        boolean flBit = (preset & 0x1) != 0;
-        boolean frBit = (preset & 0x2) != 0;
-        boolean blBit = (preset & 0x4) != 0;
-        boolean brBit = (preset & 0x8) != 0;
+        // Extract each motor's flip bit from the 4-bit preset
+        boolean flBit = (preset & 0x1) != 0; // Bit 0: FL flip
+        boolean frBit = (preset & 0x2) != 0; // Bit 1: FR flip
+        boolean blBit = (preset & 0x4) != 0; // Bit 2: BL flip
+        boolean brBit = (preset & 0x8) != 0; // Bit 3: BR flip
 
         if (frontLeft != null)
             frontLeft.setDirection(flBit ? invert(FL_BASE) : FL_BASE);
@@ -53,8 +67,12 @@ public class DriveDirectionPresets {
             backRight.setDirection(brBit ? invert(BR_BASE) : BR_BASE);
     }
 
+    /**
+     * Build a human-readable string representation of the current preset,
+     * showing the preset name and the resulting direction for each motor.
+     */
     public String getPresetString() {
-        // TODO: What does this even mean? %%Zander Lewis <zander@zanderlewis.dev>%%
+        // Extract flip bits and determine actual direction for each motor
         String flDir = ((preset & 0x1) != 0 ? invert(FL_BASE) : FL_BASE).toString();
         String frDir = ((preset & 0x2) != 0 ? invert(FR_BASE) : FR_BASE).toString();
         String blDir = ((preset & 0x4) != 0 ? invert(BL_BASE) : BL_BASE).toString();

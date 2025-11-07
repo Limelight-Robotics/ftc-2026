@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.classes.robot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.classes.Vision;
+import org.firstinspires.ftc.teamcode.classes.robot.builder.RobotStatusBuilder;
 
 /**
  * DefaultRobot is the concrete Robot implementation used by OpModes.
@@ -138,7 +139,17 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
 
     @Override
     public org.firstinspires.ftc.teamcode.classes.robot.RobotStatus getStatus() {
-        return new RobotStatusImpl();
+        return RobotStatusBuilder.create()
+                .frontLeftPower(drive.getFrontLeftPower())
+                .frontRightPower(drive.getFrontRightPower())
+                .backLeftPower(drive.getBackLeftPower())
+                .backRightPower(drive.getBackRightPower())
+                .lastForward(lastForward)
+                .lastStrafe(lastStrafe)
+                .lastRotate(lastRotate)
+                .lastTargetData(cameraData)
+                .intakePower(intakePower)
+                .build();
     }
 
     @Override
@@ -154,52 +165,5 @@ public class DefaultRobot implements org.firstinspires.ftc.teamcode.classes.Robo
         if (v < -1.0)
             return -1.0;
         return v;
-    }
-
-    private class RobotStatusImpl implements org.firstinspires.ftc.teamcode.classes.robot.RobotStatus {
-        @Override
-        public double getFrontLeftPower() {
-            return drive.getFrontLeftPower();
-        }
-
-        @Override
-        public double getFrontRightPower() {
-            return drive.getFrontRightPower();
-        }
-
-        @Override
-        public double getBackLeftPower() {
-            return drive.getBackLeftPower();
-        }
-
-        @Override
-        public double getBackRightPower() {
-            return drive.getBackRightPower();
-        }
-
-        @Override
-        public double getLastForward() {
-            return lastForward;
-        }
-
-        @Override
-        public double getLastStrafe() {
-            return lastStrafe;
-        }
-
-        @Override
-        public double getLastRotate() {
-            return lastRotate;
-        }
-
-        @Override
-        public Vision.TargetData getLastTargetData() {
-            return cameraData;
-        }
-
-        @Override
-        public double getIntakePower() {
-            return intakePower;
-        }
     }
 }
