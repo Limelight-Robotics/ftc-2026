@@ -26,7 +26,7 @@ Hardware names (defaults)
 
 Build
 - From repo root:
-	- ./build-and-deploy
+	- ./build-and-deploy.sh
 
 Notes
 - OpModes should depend only on the `Robot` and `Vision` interfaces by using the `createDefault()` factories.
