@@ -168,7 +168,7 @@ def main():
     todos = scan_directory(teamcode_dir, repo_root)
 
     # Write to output file
-    output_file = repo_root / "TODO_REPORT.md"
+    output_file = repo_root / "TODOS.md"
     with open(output_file, 'w', encoding='utf-8') as f:
         original_stdout = sys.stdout
         sys.stdout = f

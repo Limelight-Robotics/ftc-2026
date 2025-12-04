@@ -53,3 +53,4 @@ Total TODOs: 22
 ### TwoDeadWheelLocalizer.java
 - **[Line 49](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TwoDeadWheelLocalizer.java#L49):** make sure your config has **motors** with these names (or change them)
 - **[Line 55](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TwoDeadWheelLocalizer.java#L55):** reverse encoder directions if needed
+
