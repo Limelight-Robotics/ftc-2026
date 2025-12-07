@@ -8,12 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Bit 0: FL, Bit 1: FR, Bit 2: BL, Bit 3: BR
  */
 public class DriveDirectionPresets {
-    private static final DcMotor.Direction FL_BASE = DcMotor.Direction.REVERSE;
+    private static final DcMotor.Direction FL_BASE = DcMotor.Direction.FORWARD;
     private static final DcMotor.Direction FR_BASE = DcMotor.Direction.FORWARD;
     private static final DcMotor.Direction BL_BASE = DcMotor.Direction.REVERSE;
     private static final DcMotor.Direction BR_BASE = DcMotor.Direction.FORWARD;
     private static final int BITMASK = 0xF;
-    private static final int DEFAULT_PRESET = 3;
+    private static final int DEFAULT_PRESET = 0;
 
     private int preset = DEFAULT_PRESET & BITMASK;
 

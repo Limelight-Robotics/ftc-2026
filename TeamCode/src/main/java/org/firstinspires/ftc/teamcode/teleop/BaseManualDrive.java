@@ -14,6 +14,8 @@ public abstract class BaseManualDrive extends LinearOpMode {
     private final Robot robot = Robot.createDefault();
     private IntakeMode intakeMode = IntakeMode.OFF;
     private boolean lastIntakeCycleButton = false;
+    private boolean lastDpadRight = false;
+    private boolean lastDpadLeft = false;
 
     /** Returns speed multiplier (0.0 to 1.0) for drive inputs. */
     protected abstract double getSpeedMultiplier();
@@ -29,6 +31,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
         while (opModeIsActive()) {
             processGamepadInput();
             processIntakeInput();
+            processPresetInput();
             updateTelemetry();
         }
     }
@@ -37,7 +40,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
         double multiplier = getSpeedMultiplier();
         double forward = -gamepad1.left_stick_y * multiplier;
         double strafe = gamepad1.left_stick_x * multiplier;
-        double rotate = gamepad1.right_stick_x * multiplier;
+        double rotate = -gamepad1.right_stick_x * multiplier;
         robot.driveWithGamepad(forward, strafe, rotate);
     }
 
@@ -50,6 +53,20 @@ public abstract class BaseManualDrive extends LinearOpMode {
         robot.setIntakePower(intakeMode.getPower());
     }
 
+    private void processPresetInput() {
+        boolean dpadRight = gamepad1.dpad_right;
+        boolean dpadLeft = gamepad1.dpad_left;
+
+        if (dpadRight && !lastDpadRight) {
+            robot.cycleDriveDirectionPreset(1);
+        } else if (dpadLeft && !lastDpadLeft) {
+            robot.cycleDriveDirectionPreset(-1);
+        }
+
+        lastDpadRight = dpadRight;
+        lastDpadLeft = dpadLeft;
+    }
+
     private void updateTelemetry() {
         RobotStatus status = robot.getStatus();
         telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -60,6 +77,8 @@ public abstract class BaseManualDrive extends LinearOpMode {
                 status.getLastForward(), status.getLastStrafe(), status.getLastRotate());
         telemetry.addData("Intake", "Mode: %s, Power: %.2f", 
                 intakeMode.toString(), status.getIntakePower());
+        telemetry.addData("Drive Preset", robot.getDriveDirectionString());
+        telemetry.addData("Controls", "D-Pad L/R: Cycle Preset | Y: Cycle Intake");
         telemetry.update();
     }
 }
