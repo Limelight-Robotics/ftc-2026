@@ -88,7 +88,7 @@ class DefaultRobot implements Robot {
     public void setIntakePower(double power) {
         intakePower = Utilities.clamp(power);
         if (intakeMotor != null) {
-            intakeMotor.setPower(intakePower);
+            intakeMotor.setPower(-intakePower);
         }
     }
 

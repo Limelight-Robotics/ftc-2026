@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.classes.Robot;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
 
@@ -17,12 +18,18 @@ public abstract class BaseManualDrive extends LinearOpMode {
     private boolean lastDpadRight = false;
     private boolean lastDpadLeft = false;
 
+    // Turret
+    private DcMotor turretMotor;
+    private static final String TURRET_MOTOR_NAME = "turret";
+    private static final double MAX_MOTOR_POWER = 1.0;
+
     /** Returns speed multiplier (0.0 to 1.0) for drive inputs. */
     protected abstract double getSpeedMultiplier();
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+        initializeTurret();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -32,8 +39,10 @@ public abstract class BaseManualDrive extends LinearOpMode {
             processGamepadInput();
             processIntakeInput();
             processPresetInput();
+            turretMotor.setPower(computeTurretPower());
             updateTelemetry();
         }
+        turretMotor.setPower(0.0);
     }
 
     private void processGamepadInput() {
@@ -66,6 +75,25 @@ public abstract class BaseManualDrive extends LinearOpMode {
         lastDpadRight = dpadRight;
         lastDpadLeft = dpadLeft;
     }
+
+    private boolean initializeTurret() {
+        try {
+            turretMotor = hardwareMap.get(DcMotor.class, TURRET_MOTOR_NAME);
+            turretMotor.setPower(0.0);
+            return true;
+        } catch (Exception e) {
+            telemetry.addData("Error", "Failed to init turret: " + e.getMessage());
+            telemetry.update();
+            return false;
+        }
+    }
+
+    private double computeTurretPower() {
+        double rightTrigger = gamepad1.right_trigger;
+        double leftTrigger = gamepad1.left_trigger;
+        return -((rightTrigger - leftTrigger) * MAX_MOTOR_POWER);
+    }
+
 
     private void updateTelemetry() {
         RobotStatus status = robot.getStatus();
