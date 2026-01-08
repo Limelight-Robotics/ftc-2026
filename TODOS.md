@@ -3,10 +3,10 @@ Total TODOs: 22
 
 ## Table of Contents
 
-- [zanderlewis (4 items)](#zanderlewis-4-items)
-- [Unassigned (18 items)](#unassigned-18-items)
+- [zanderlewis (6 items)](#zanderlewis-6-items)
+- [Unassigned (16 items)](#unassigned-16-items)
 
-## zanderlewis (4 items)
+## zanderlewis (6 items)
 
 ### BlueLeftAuto.java
 - **[Line 37](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/autonomous/BlueLeftAuto.java#L37):** Real pathing
@@ -20,14 +20,18 @@ Total TODOs: 22
 ### RedRightAuto.java
 - **[Line 37](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/autonomous/RedRightAuto.java#L37):** Real pathing
 
-## Unassigned (18 items)
+### ThreeDeadWheelLocalizer.java
+- **[Line 25](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java#L25):** Actual values
+- **[Line 43](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java#L43):** Change these or hardware
+
+## Unassigned (16 items)
 
 ### MecanumDrive.java
-- **[Line 58](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L58):** fill in these values based on
-- **[Line 140](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L140):** reverse encoders if needed
-- **[Line 226](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L226):** make sure your config has motors with these names (or change them)
-- **[Line 238](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L238):** reverse motor directions if needed
-- **[Line 241](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L241):** make sure your config has an IMU with this name (can be BNO or BHI)
+- **[Line 43](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L43):** fill in these values based on
+- **[Line 125](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L125):** reverse encoders if needed
+- **[Line 211](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L211):** make sure your config has motors with these names (or change them)
+- **[Line 223](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L223):** reverse motor directions if needed
+- **[Line 226](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecanumDrive.java#L226):** make sure your config has an IMU with this name (can be BNO or BHI)
 
 ### OTOSLocalizer.java
 - **[Line 31](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/OTOSLocalizer.java#L31):** make sure your config has an OTOS device with this name
@@ -42,10 +46,6 @@ Total TODOs: 22
 - **[Line 236](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java#L236):** make sure your config has motors with these names (or change them)
 - **[Line 249](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java#L249):** reverse motor directions if needed
 - **[Line 252](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TankDrive.java#L252):** make sure your config has an IMU with this name (can be BNO or BHI)
-
-### ThreeDeadWheelLocalizer.java
-- **[Line 40](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java#L40):** make sure your config has **motors** with these names (or change them)
-- **[Line 47](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ThreeDeadWheelLocalizer.java#L47):** reverse encoder directions if needed
 
 ### TuningOpModes.java
 - **[Line 55](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/TuningOpModes.java#L55):** change this to TankDrive.class if you're using tank

@@ -25,10 +25,10 @@ public class DebugMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        fL = hardwareMap.get(DcMotor.class, "frontLeft");
-        fR = hardwareMap.get(DcMotor.class, "frontRight");
-        bL = hardwareMap.get(DcMotor.class, "backLeft");
-        bR = hardwareMap.get(DcMotor.class, "backRight");
+        fL = hardwareMap.get(DcMotor.class, "leftFront");
+        fR = hardwareMap.get(DcMotor.class, "rightFront");
+        bL = hardwareMap.get(DcMotor.class, "leftBack");
+        bR = hardwareMap.get(DcMotor.class, "rightBack");
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("Controls", "Y=FL, B=FR, X=BL, A=BR");

@@ -36,8 +36,16 @@ public class DriveSubsystem {
     }
 
     private void validateMotors() {
-        if (frontLeft == null || backLeft == null || frontRight == null || backRight == null) {
-            throw new IllegalStateException("Missing drive motor(s) in hardware map");
+        String[] names = { "frontLeft", "backLeft", "frontRight", "backRight" };
+        DcMotor[] motors = { frontLeft, backLeft, frontRight, backRight };
+        StringBuilder missing = new StringBuilder();
+        for (int i = 0; i < motors.length; i++) {
+            if (motors[i] == null) {
+            missing.append(names[i]).append(" ");
+            }
+        }
+        if (missing.length() > 0) {
+            throw new IllegalStateException("Missing drive motor(s) in hardware map: " + missing.toString().trim());
         }
     }
 
@@ -71,21 +79,6 @@ public class DriveSubsystem {
         lastFRPower = frontRight != null ? frontRight.getPower() : 0.0;
         lastBLPower = backLeft != null ? backLeft.getPower() : 0.0;
         lastBRPower = backRight != null ? backRight.getPower() : 0.0;
-    }
-
-    public void cycleDriveDirectionPreset(int shift) {
-        int cur = directionPresets.getPreset();
-        int next = (cur + shift) & 0xF;
-        directionPresets.setPreset(next);
-        directionPresets.applyTo(frontLeft, frontRight, backLeft, backRight);
-    }
-
-    public int getDirectionPreset() {
-        return directionPresets.getPreset();
-    }
-
-    public String getDirectionString() {
-        return directionPresets.getPresetString();
     }
 
     public double getFrontLeftPower() { return lastFLPower; }

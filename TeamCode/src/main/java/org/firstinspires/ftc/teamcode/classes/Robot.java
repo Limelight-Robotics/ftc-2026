@@ -1,25 +1,62 @@
+
 package org.firstinspires.ftc.teamcode.classes;
 
+import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
+
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.classes.robot.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatusSnapshot;
+
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.classes.robot.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
+import org.firstinspires.ftc.teamcode.classes.robot.RobotStatusSnapshot;
+
 
 /**
  * Robot interface for teleop control. For autonomous, use MecanumDrive directly
  * with RoadRunner trajectories.
  */
 public interface Robot {
+    /** Initialize robot hardware from hardware map. */
     void init(HardwareMap hardwareMap);
+
+    /** Drive the robot. */
+
     void drive(double forward, double strafe, double rotate);
     void driveWithGamepad(double forward, double strafe, double rotate);
+
+    /** Stop all movement immediately. */
     void stopMovement();
+
+    /** Get current robot status snapshot. */
     RobotStatus getStatus();
+
+    /** Set intake motor power (-1.0 to 1.0). */
     void setIntakePower(double power);
-    void cycleDriveDirectionPreset(int delta);
-    int getDriveDirectionPreset();
-    String getDriveDirectionString();
+    
+    /** Update localizer and return current pose. */
+    Pose2d updateLocalizer();
+    
+    /** Get current robot pose from localizer. */
+    Pose2d getPose();
+    
+    /** Get current robot velocity from localizer. */
+    PoseVelocity2d getVelocity();
+    
+    /** Reset pose to a new value. */
+    void setPose(Pose2d pose);
 
     /** Factory method for default implementation. */
     static Robot createDefault() {
@@ -27,83 +64,3 @@ public interface Robot {
     }
 }
 
-/**
- * Default Robot implementation delegating to DriveSubsystem.
- */
-class DefaultRobot implements Robot {
-    private final DriveSubsystem drive = new DriveSubsystem();
-    private DcMotor intakeMotor = null;
-    private double lastForward, lastStrafe, lastRotate;
-    private double intakePower = 0.0;
-
-    @Override
-    public void init(HardwareMap hardwareMap) {
-        drive.init(hardwareMap);
-        initIntakeMotor(hardwareMap);
-    }
-
-    private void initIntakeMotor(HardwareMap hardwareMap) {
-        try {
-            intakeMotor = hardwareMap.get(DcMotor.class, "intake");
-            intakeMotor.setPower(0.0);
-        } catch (Exception ignored) {
-            intakeMotor = null;
-        }
-    }
-
-    @Override
-    public void drive(double forward, double strafe, double rotate) {
-        drive.drive(forward, strafe, rotate);
-    }
-
-    @Override
-    public void driveWithGamepad(double forward, double strafe, double rotate) {
-        lastForward = forward;
-        lastStrafe = strafe;
-        lastRotate = rotate;
-        drive.drive(forward, strafe, rotate);
-        drive.updateTelemetryPowers();
-    }
-
-    @Override
-    public void stopMovement() {
-        drive.stop();
-    }
-
-    @Override
-    public RobotStatus getStatus() {
-        return RobotStatusSnapshot.builder()
-                .frontLeftPower(drive.getFrontLeftPower())
-                .frontRightPower(drive.getFrontRightPower())
-                .backLeftPower(drive.getBackLeftPower())
-                .backRightPower(drive.getBackRightPower())
-                .lastForward(lastForward)
-                .lastStrafe(lastStrafe)
-                .lastRotate(lastRotate)
-                .intakePower(intakePower)
-                .build();
-    }
-
-    @Override
-    public void setIntakePower(double power) {
-        intakePower = Utilities.clamp(power);
-        if (intakeMotor != null) {
-            intakeMotor.setPower(-intakePower);
-        }
-    }
-
-    @Override
-    public void cycleDriveDirectionPreset(int delta) {
-        drive.cycleDriveDirectionPreset(delta);
-    }
-
-    @Override
-    public int getDriveDirectionPreset() {
-        return drive.getDirectionPreset();
-    }
-
-    @Override
-    public String getDriveDirectionString() {
-        return drive.getDirectionString();
-    }
-}
