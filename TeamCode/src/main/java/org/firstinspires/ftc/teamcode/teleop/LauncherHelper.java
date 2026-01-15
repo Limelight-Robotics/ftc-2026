@@ -25,7 +25,7 @@ public final class LauncherHelper {
     }
 
     /**
-     * Example stub for fixed launch angle (radians).
+     * Launch angle in radians (fixed).
      */
     public static double getFixedLaunchAngleRadians() {
         return Math.toRadians(30.0); // 30 degrees
@@ -35,8 +35,7 @@ public final class LauncherHelper {
      * Example stub for launcher wheel radius (meters).
      */
     public static double getLauncherWheelRadiusMeters() {
-        // Example: 2 inch wheel
-        return 0.0254 * 2.0;
+        return 0.0254 * 1.0; // 1 inch in meters
     }
 
     /**
