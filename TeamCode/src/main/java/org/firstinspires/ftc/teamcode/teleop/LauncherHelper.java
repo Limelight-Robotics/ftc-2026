@@ -32,7 +32,7 @@ public final class LauncherHelper {
     }
 
     /**
-     * Example stub for launcher wheel radius (meters).
+     * Launcher wheel radius in meters.
      */
     public static double getLauncherWheelRadiusMeters() {
         return 0.0254 * 1.0; // 1 inch in meters
