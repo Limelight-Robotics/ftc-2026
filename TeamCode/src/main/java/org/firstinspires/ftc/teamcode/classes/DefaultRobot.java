@@ -14,6 +14,7 @@ public class DefaultRobot implements Robot {
     private final DriveSubsystem drive = new DriveSubsystem();
     private DcMotor intakeMotor = null;
     private ThreeDeadWheelLocalizer localizer = null;
+    private Vision vision = null;
 
     public ThreeDeadWheelLocalizer getLocalizer() {
         return localizer;
@@ -27,6 +28,13 @@ public class DefaultRobot implements Robot {
         drive.init(hardwareMap);
         initIntakeMotor(hardwareMap);
         initLocalizer(hardwareMap);
+        vision = new Vision(hardwareMap);
+        /**
+         * Get the Vision subsystem (for Limelight3A/AprilTag queries).
+         */
+        public Vision getVision() {
+            return vision;
+        }
     }
 
     private void initIntakeMotor(HardwareMap hardwareMap) {

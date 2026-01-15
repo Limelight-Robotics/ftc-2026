@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.classes.Robot;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
+import org.firstinspires.ftc.teamcode.teleop.LauncherHelper;
 
 /**
  * Base class for manual drive OpModes. Provides common drive and intake logic.
@@ -49,6 +50,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
             processIntakeInput();
             processTurretInput();
             processCableDriveInput();
+            processLauncherInput();
             robot.updateLocalizer();
             updateTelemetry();
         }
@@ -65,6 +67,14 @@ public abstract class BaseManualDrive extends LinearOpMode {
             telemetry.update();
             return null;
         }
+    }
+
+    /**
+     * Launcher control: Press right stick button to set launcher RPM for trajectory.
+     */
+    private void processLauncherInput() {
+        if (turretMotor == null) return;
+        // 
     }
 
     private void processDriveInput() {
