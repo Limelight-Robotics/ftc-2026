@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
 import org.firstinspires.ftc.teamcode.classes.Vision;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
-import org.firstinspires.ftc.teamcode.teleop.LauncherHelper;
 
 /**
  * Base class for manual drive OpModes. Provides common drive and intake logic.

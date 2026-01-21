@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
-
-import org.firstinspires.ftc.teamcode.classes.Utilities;
+package org.firstinspires.ftc.teamcode.classes;
 
 /**
  * Helper for launcher logic: distance, velocity, RPM calculation.
