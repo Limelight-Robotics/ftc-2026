@@ -111,14 +111,45 @@ public final class LauncherHelper {
 
     /**
      * Calculate required RPM for launcher wheel to hit goal using robot's vision.
+     *
      * Uses physics-based projectile motion with fudge factor compensation.
+     * Assumes the ball exits at the wheel's tangential (rim) velocity.
+     *
+     * USAGE:
+     *   double targetRPM = LauncherHelper.calculateRequiredRPM(robot);
+     *   launcherMotor.setVelocity(targetRPM / 60.0 * TICKS_PER_REV, AngleUnit.DEGREES);
+     *   // Or if using RUN_USING_ENCODER with velocity PID:
+     *   launcherMotor.setVelocity(targetRPM * TICKS_PER_REV / 60.0);
+     *
+     * IMPORTANT: This returns the TARGET wheel RPM, not motor power (0-1).
+     * You must use velocity control mode on your motor controller.
+     *
+     * TUNING:
+     *   - If shots consistently fall SHORT, increase VELOCITY_FUDGE_FACTOR
+     *   - If shots consistently OVERSHOOT, decrease VELOCITY_FUDGE_FACTOR
+     *   - Typical real-world values: 1.1 to 1.5 (default is 1.0)
+     *
+     * RETURNS: 0 if the shot is impossible (goal too high for angle/distance),
+     *          or if robot/vision is null.
+     *
+     * @param robot The robot instance with vision subsystem for distance/height data
+     * @return Required wheel RPM to hit the goal, or 0 if shot is impossible
      */
     public static double calculateRequiredRPM(org.firstinspires.ftc.teamcode.classes.DefaultRobot robot) {
-        double distance = getDistanceToGoalMeters(robot);
-        double height = getHeightToGoalMeters(robot);
-        double angle = getFixedLaunchAngleRadians();
+        // Get target parameters from vision system
+        double distance = getDistanceToGoalMeters(robot);  // horizontal distance (m)
+        double height = getHeightToGoalMeters(robot);      // vertical offset (m), positive = goal above launcher
+        double angle = getFixedLaunchAngleRadians();       // fixed 30° launch angle
+
+        // Calculate required ball exit velocity using projectile motion physics:
+        // v = sqrt(g * d² / (2 * cos²(θ) * (d * tan(θ) - h)))
         double velocity = calculateLaunchVelocity(distance, height, angle);
-        velocity *= VELOCITY_FUDGE_FACTOR; // Apply real-world correction
+
+        // Apply fudge factor for real-world losses (wheel slip, air resistance, etc.)
+        velocity *= VELOCITY_FUDGE_FACTOR;
+
+        // Convert linear velocity (m/s) to wheel RPM
+        // Assumes ball exits at wheel rim velocity: v = ω * r
         double radius = getLauncherWheelRadiusMeters();
         return Utilities.velocityToRPM(velocity, radius);
     }
