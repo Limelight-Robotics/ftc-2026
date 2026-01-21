@@ -4,14 +4,15 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
+
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.classes.robot.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatusSnapshot;
 
 public class DefaultRobot implements Robot {
-    private final DriveSubsystem drive = new DriveSubsystem();
+    private DriveSubsystem drive = null;
     private DcMotor intakeMotor = null;
     private ThreeDeadWheelLocalizer localizer = null;
     private Vision vision = null;
@@ -25,16 +26,10 @@ public class DefaultRobot implements Robot {
 
     @Override
     public void init(HardwareMap hardwareMap) {
-        drive.init(hardwareMap);
+        drive = new DriveSubsystem(hardwareMap);
         initIntakeMotor(hardwareMap);
         initLocalizer(hardwareMap);
         vision = new Vision(hardwareMap);
-        /**
-         * Get the Vision subsystem (for Limelight3A/AprilTag queries).
-         */
-        public Vision getVision() {
-            return vision;
-        }
     }
 
     private void initIntakeMotor(HardwareMap hardwareMap) {

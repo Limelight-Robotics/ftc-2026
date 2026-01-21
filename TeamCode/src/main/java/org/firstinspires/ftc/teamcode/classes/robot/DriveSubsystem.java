@@ -22,7 +22,7 @@ public class DriveSubsystem {
     private double lastFLPower, lastFRPower, lastBLPower, lastBRPower;
 
     /** Initialize motors from hardware map. */
-    public void init(HardwareMap hardwareMap) {
+    public DriveSubsystem(HardwareMap hardwareMap) {
         if (hardwareMap == null) {
             throw new IllegalArgumentException("hardwareMap cannot be null");
         }
