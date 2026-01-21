@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.classes.robot.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatusSnapshot;
 
-public class DefaultRobot implements Robot {
+public class DefaultRobot {
     private DriveSubsystem drive = null;
     private DcMotor intakeMotor = null;
     private ThreeDeadWheelLocalizer localizer = null;
@@ -24,7 +24,6 @@ public class DefaultRobot implements Robot {
     private double lastForward, lastStrafe, lastRotate;
     private double intakePower = 0.0;
 
-    @Override
     public void init(HardwareMap hardwareMap) {
         drive = new DriveSubsystem(hardwareMap);
         initIntakeMotor(hardwareMap);
@@ -50,12 +49,10 @@ public class DefaultRobot implements Robot {
         }
     }
 
-    @Override
     public void drive(double forward, double strafe, double rotate) {
         drive.drive(forward, strafe, rotate);
     }
 
-    @Override
     public void driveWithGamepad(double forward, double strafe, double rotate) {
         lastForward = forward;
         lastStrafe = strafe;
@@ -64,12 +61,10 @@ public class DefaultRobot implements Robot {
         drive.updateTelemetryPowers();
     }
 
-    @Override
     public void stopMovement() {
         drive.stop();
     }
 
-    @Override
     public RobotStatus getStatus() {
         return RobotStatusSnapshot.builder()
                 .frontLeftPower(drive.getFrontLeftPower())
@@ -83,7 +78,6 @@ public class DefaultRobot implements Robot {
                 .build();
     }
 
-    @Override
     public void setIntakePower(double power) {
         intakePower = Utilities.clamp(power);
         if (intakeMotor != null) {
@@ -91,7 +85,6 @@ public class DefaultRobot implements Robot {
         }
     }
     
-    @Override
     public Pose2d updateLocalizer() {
         if (localizer != null) {
             lastVelocity = localizer.update();
@@ -100,7 +93,6 @@ public class DefaultRobot implements Robot {
         return new Pose2d(0, 0, 0);
     }
     
-    @Override
     public Pose2d getPose() {
         if (localizer != null) {
             return localizer.getPose();
@@ -108,12 +100,10 @@ public class DefaultRobot implements Robot {
         return new Pose2d(0, 0, 0);
     }
     
-    @Override
     public PoseVelocity2d getVelocity() {
         return lastVelocity;
     }
     
-    @Override
     public void setPose(Pose2d pose) {
         if (localizer != null) {
             localizer.setPose(pose);

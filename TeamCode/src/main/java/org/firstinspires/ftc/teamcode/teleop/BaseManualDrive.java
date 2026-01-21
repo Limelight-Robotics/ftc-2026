@@ -4,7 +4,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.teamcode.classes.Robot;
+import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
+import org.firstinspires.ftc.teamcode.classes.Vision;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
 import org.firstinspires.ftc.teamcode.teleop.LauncherHelper;
 
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.teamcode.teleop.LauncherHelper;
  */
 public abstract class BaseManualDrive extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
-    private final Robot robot = Robot.createDefault();
+    private final DefaultRobot robot = new DefaultRobot();
 
     // Intake
     private DcMotor intakeMotor;
@@ -31,6 +32,9 @@ public abstract class BaseManualDrive extends LinearOpMode {
     private static final String CABLE_DRIVE_MOTOR_NAME = "cableDrive";
     private static final double MAX_CABLE_DRIVE_POWER = 1.0;
 
+    // Vision
+    private Vision vision;
+
     /** Returns speed multiplier (0.0 to 1.0) for drive inputs. */
     protected abstract double getSpeedMultiplier();
 
@@ -40,6 +44,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
         intakeMotor = getMotorOrNull(INTAKE_MOTOR_NAME);
         turretMotor = getMotorOrNull(TURRET_MOTOR_NAME);
         cableDriveMotor = getMotorOrNull(CABLE_DRIVE_MOTOR_NAME);
+        vision = robot.getVision();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -52,6 +57,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
             processCableDriveInput();
             processLauncherInput();
             robot.updateLocalizer();
+            vision.update();
             updateTelemetry();
         }
         stopMotors();
@@ -158,6 +164,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
         telemetry.addData("Inputs", "Fwd: %.2f, Str: %.2f, Rot: %.2f",
                 status.getLastForward(), status.getLastStrafe(), status.getLastRotate());
         telemetry.addData("Intake Power", "%.2f", status.getIntakePower());
+        telemetry.addData("Vision", vision.getStatusString());
         telemetry.update();
     }
 }
