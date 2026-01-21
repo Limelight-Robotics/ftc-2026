@@ -11,7 +11,6 @@ public class Vision {
 
     public Vision(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
-        // 
     }
 
     /**
@@ -20,7 +19,7 @@ public class Vision {
      * @return distance in meters
      */
     public double getDistanceToGoalMeters() {
-        // 
+        return 0;
     }
 
     /**
@@ -29,6 +28,6 @@ public class Vision {
      * @return height difference in meters
      */
     public double getHeightToGoalMeters() {
-        // 
+        return 0;
     }
 }

@@ -119,4 +119,8 @@ public class DefaultRobot implements Robot {
             localizer.setPose(pose);
         }
     }
+
+    public Vision getVision() {
+        return vision;
+    }
 }
