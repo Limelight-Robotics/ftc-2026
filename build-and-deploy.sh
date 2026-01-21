@@ -5,6 +5,13 @@
 
 set -e  # Exit on error
 
+# Handle --clean flag to force a clean build (useful when cache gets corrupted)
+if [ "$1" = "--clean" ]; then
+    echo "🧹 Cleaning build..."
+    ./gradlew clean
+    echo ""
+fi
+
 START_TIME=$(date +%s)
 
 print_elapsed() {
@@ -43,9 +50,20 @@ WIFI_DEVICE_PORT="5555"
 MAX_RETRIES=3
 RETRY_DELAY=2
 
-# Function to restart local ADB server
+# Function to recover offline devices (tries fast reconnect first, then full restart)
 restart_adb_server() {
-    echo "🔄 Restarting local ADB server..."
+    # Try fast reconnect for offline devices first
+    echo "🔄 Attempting quick reconnect of offline devices..."
+    adb reconnect offline 2>/dev/null
+    sleep 1
+
+    # Check if we have a device now
+    if adb devices | grep -q "device$"; then
+        return 0
+    fi
+
+    # Fall back to full server restart
+    echo "🔄 Quick reconnect failed, restarting ADB server..."
     adb kill-server 2>/dev/null
     sleep 1
     adb start-server
@@ -56,19 +74,19 @@ restart_adb_server() {
 reconnect_wifi_device() {
     if [ -n "$WIFI_DEVICE_IP" ]; then
         echo "🔄 Attempting to reconnect to $WIFI_DEVICE_IP:$WIFI_DEVICE_PORT..."
-        adb connect "$WIFI_DEVICE_IP:$WIFI_DEVICE_PORT"
-        sleep 2
+        adb connect "$WIFI_DEVICE_IP:$WIFI_DEVICE_PORT" 2>&1 | head -n 1
+        sleep 3
     fi
 }
 
 # Function to find USB device (serial number, no colon)
 find_usb_device() {
-    adb devices | grep -v "List of devices" | grep "device$" | awk '{print $1}' | grep -v ":" | head -n 1
+    adb devices | grep -v "List of devices" | grep "device$" | awk '{print $1}' | grep -v ":" | head -n 1 | tr -d '\n\r'
 }
 
 # Function to find any device (USB or WiFi)
 find_any_device() {
-    adb devices | grep -v "List of devices" | grep "device$" | head -n 1 | awk '{print $1}'
+    adb devices | grep -v "List of devices" | grep "device$" | head -n 1 | awk '{print $1}' | tr -d '\n\r'
 }
 
 # Function to find connected device with retries (prefers USB over WiFi)
@@ -134,8 +152,9 @@ install_apk() {
                 sleep 2
 
                 # Update device reference in case it changed
-                device=$(adb devices | grep -v "List of devices" | grep "device$" | head -n 1 | awk '{print $1}')
-                if [ -z "$device" ]; then
+                device=$(adb devices | grep -v "List of devices" | grep "device$" | head -n 1 | awk '{print $1}' | tr -d '\n\r')
+                # Validate device string format (should be IP:port or serial)
+                if [ -z "$device" ] || [[ "$device" == *" "* ]] || [[ "$device" == *$'\n'* ]]; then
                     echo "❌ Could not reconnect to device"
                     return 1
                 fi
