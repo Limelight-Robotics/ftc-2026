@@ -26,7 +26,7 @@ echo ""
 
 # Build the APK
 echo "📦 Building APK..."
-./gradlew assembleDebug -x lint -x lintVitalAnalyzeRelease -x lintVitalReportRelease
+./gradlew assembleDebug -x lint -x lintVitalAnalyzeRelease -x lintVitalReportRelease --parallel --build-cache --configuration-cache
 
 if [ $? -ne 0 ]; then
     echo "❌ Build failed!"
