@@ -34,27 +34,6 @@ public final class Utilities {
     }
 
     /**
-     * Calculate the required launcher wheel velocity to hit a target at a given distance
-     * and height, using a fixed launch angle.
-     *
-     * @param distance Horizontal distance to the goal (in meters)
-     * @param height Vertical difference between launcher and goal (in meters)
-     * @param launchAngle Launch angle in radians
-     * @return Required initial velocity (m/s)
-     */
-    public static double calculateLaunchVelocity(double distance, double height, double launchAngle) {
-        // g = gravity (m/s^2)
-        final double g = 9.820302;
-        double cosA = Math.cos(launchAngle);
-        double sinA = Math.sin(launchAngle);
-        double numerator = g * Math.pow(distance, 2);
-        double denominator = 2 * Math.pow(cosA, 2) * (distance * Math.tan(launchAngle) - height);
-        if (denominator <= 0) return 0; // impossible shot
-        double v = Math.sqrt(numerator / denominator);
-        return v;
-    }
-
-    /**
      * Convert linear velocity (m/s) to launcher wheel RPM.
      * @param velocity Linear velocity in m/s
      * @param wheelRadius Radius of launcher wheel in meters
