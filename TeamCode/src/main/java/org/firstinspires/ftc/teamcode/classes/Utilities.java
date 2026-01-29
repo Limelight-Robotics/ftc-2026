@@ -45,4 +45,32 @@ public final class Utilities {
         double rpm = omega * 60 / (2 * Math.PI);
         return rpm;
     }
+
+    /**
+     * Calculate required launch velocity using projectile motion physics.
+     * Formula: v = sqrt(g * d² / (2 * cos²(θ) * (d * tan(θ) - h)))
+     *
+     * @param distance Horizontal distance to target in meters
+     * @param height Vertical offset to target in meters (positive = target above launcher)
+     * @param angle Launch angle in radians
+     * @return Required launch velocity in m/s, or 0 if shot is impossible
+     */
+    public static double calculateLaunchVelocity(double distance, double height, double angle) {
+        final double GRAVITY = 9.81; // m/s²
+
+        double cosAngle = Math.cos(angle);
+        double tanAngle = Math.tan(angle);
+
+        // Denominator: 2 * cos²(θ) * (d * tan(θ) - h)
+        double denominator = 2 * cosAngle * cosAngle * (distance * tanAngle - height);
+
+        // If denominator <= 0, the shot is impossible (target too high for angle/distance)
+        if (denominator <= 0) {
+            return 0;
+        }
+
+        // v = sqrt(g * d² / denominator)
+        double velocitySquared = GRAVITY * distance * distance / denominator;
+        return Math.sqrt(velocitySquared);
+    }
 }
