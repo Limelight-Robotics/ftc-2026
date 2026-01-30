@@ -61,7 +61,7 @@ public class LimelightDiagnostic extends LinearOpMode {
                 telemetry.addData("tx", "%.2f", result.getTx());
                 telemetry.addData("ty", "%.2f", result.getTy());
                 telemetry.addData("ta", "%.2f", result.getTa());
-                telemetry.addData("Staleness (ms)", "%.1f", result.getStaleness());
+                telemetry.addData("Staleness (ms)", "%d", result.getStaleness());
                 telemetry.addData("Pipeline Index", result.getPipelineIndex());
 
                 // Botpose
