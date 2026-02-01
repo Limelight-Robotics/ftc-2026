@@ -46,6 +46,8 @@ TeamCode/src/main/java/org/firstinspires/ftc/teamcode/
 
 **Teleop**: Extend `BaseManualDrive` and override `getSpeedMultiplier()` for speed variants.
 
+`BaseManualDrive` main loop: drive input → intake → turret → cable drive → launcher → localizer update → vision update → telemetry.
+
 Gamepad 1 Controls:
 | Control | Action |
 |---------|--------|
@@ -58,12 +60,59 @@ Gamepad 1 Controls:
 | Right trigger | Turret right |
 | D-pad left | Cable drive reverse |
 | D-pad right | Cable drive forward |
+| Right stick button | Launcher (set RPM for trajectory - WIP) |
 
 Speed variants:
 - `ManualDrive`: Full speed (1.0x)
 - `SlowManualDrive`: 10% speed (0.1x)
 
 Hardware names for teleop: `"intake"`, `"turret"`, `"cableDrive"` (all optional with null-safe handling)
+
+### Vision-Assisted Launching
+
+The robot uses a Limelight 3A camera to track AprilTags on the goal for vision-assisted ball launching.
+
+**How it works:**
+1. `Vision` class (`classes/Vision.java`) wraps Limelight3A, polling at 100Hz on pipeline 0 (AprilTag detection)
+2. Each loop iteration calls `vision.update()` which finds the target AprilTag (configurable via `setTargetTagId()`, or tracks any visible tag by default)
+3. For each detected tag, `getRobotPoseTargetSpace()` provides the robot's 3D pose relative to the tag
+4. From this pose, Vision computes:
+   - **Horizontal distance** to goal: `sqrt(x² + z²)` from the X/Z plane
+   - **Height difference** to goal: Y component of the pose
+   - **tx/ty**: Raw Limelight angle offsets for turret aiming (tx = horizontal, ty = vertical)
+5. `processLauncherInput()` in `BaseManualDrive` uses the turret motor and vision data to aim and launch (implementation in progress)
+
+**Vision API:**
+- `vision.hasTarget()` — true if a valid AprilTag is being tracked
+- `vision.getDistanceToGoalMeters()` — horizontal distance to the goal
+- `vision.getHeightToGoalMeters()` — vertical height difference (positive = goal above camera)
+- `vision.getTx()` — horizontal angle offset in degrees (for turret aiming)
+- `vision.getTrackedTagId()` — ID of the currently tracked tag
+- `vision.getStatusString()` — formatted string for telemetry display
+
+### LauncherHelper (Trajectory Math)
+
+`LauncherHelper` (`classes/LauncherHelper.java`) calculates the required launcher wheel RPM to hit the goal using projectile motion physics and vision data.
+
+**How it works:**
+1. Gets distance and height to goal from the `Vision` subsystem
+2. Uses a fixed 30° launch angle
+3. Applies projectile motion formula: `v = sqrt(g * d² / (2 * cos²(θ) * (d * tan(θ) - h)))`
+4. Multiplies by `VELOCITY_FUDGE_FACTOR` (default 1.0) to compensate for real-world losses (wheel slip, air resistance, ball compression)
+5. Converts linear velocity to wheel RPM assuming ball exits at wheel rim speed (`v = ω * r`, wheel radius = 1 inch)
+
+**Key constants:**
+- `LAUNCHER_WHEEL_RADIUS` — 1 inch (0.0254m)
+- `VELOCITY_FUDGE_FACTOR` — tunable multiplier (increase if shots fall short, decrease if they overshoot; typical range 1.1–1.5)
+
+**Usage:**
+```java
+double targetRPM = LauncherHelper.calculateRequiredRPM(robot);
+// Use velocity control mode, NOT power mode
+launcherMotor.setVelocity(targetRPM * TICKS_PER_REV / 60.0);
+```
+
+**Alternative approach:** The class documents a lookup table strategy for when physics-based calculation is consistently inaccurate — measure RPM at 4-5 known distances and interpolate between them.
 
 **Autonomous**: Direct `MecanumDrive` initialization with start pose, RoadRunner trajectory building (`.lineToY()`, `.turn()`, etc.), blocking action execution via `Actions.runBlocking()`.
 
