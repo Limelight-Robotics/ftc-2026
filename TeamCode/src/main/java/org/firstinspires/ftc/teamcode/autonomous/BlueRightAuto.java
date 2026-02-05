@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 /**
@@ -13,11 +12,12 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
  * Customize trajectory based on game objectives.
  */
 @Autonomous(name = "Blue Right Auto", group = "Autonomous")
-public class BlueRightAuto extends LinearOpMode {
+public class BlueRightAuto extends LinearOpMode
+{
     private static final Pose2d START_POSE = new Pose2d(12, 60, Math.toRadians(-90));
 
-    @Override
-    public void runOpMode() {
+    @Override public void runOpMode()
+    {
         MecanumDrive drive = new MecanumDrive(hardwareMap, START_POSE);
 
         telemetry.addData("Status", "Blue Right - Ready");
@@ -25,7 +25,8 @@ public class BlueRightAuto extends LinearOpMode {
 
         waitForStart();
 
-        if (isStopRequested()) return;
+        if (isStopRequested())
+            return;
 
         runAutonomousPath(drive);
 
@@ -33,14 +34,13 @@ public class BlueRightAuto extends LinearOpMode {
         telemetry.update();
     }
 
-    private void runAutonomousPath(MecanumDrive drive) {
+    private void runAutonomousPath(MecanumDrive drive)
+    {
         // TODO(zanderlewis): Real pathing
-        Actions.runBlocking(
-            drive.actionBuilder(START_POSE)
+        Actions.runBlocking(drive.actionBuilder(START_POSE)
                 .lineToY(36)
                 .turn(Math.toRadians(-90))
                 .lineToX(48)
-                .build()
-        );
+                .build());
     }
 }

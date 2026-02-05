@@ -13,18 +13,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   X - Back Left
  *   A - Back Right
  */
-@TeleOp(name = "Debug Motors", group = "Diagnostic")
-public class DebugMotors extends LinearOpMode {
+@TeleOp(name = "Debug Motors", group = "Diagnostic") public class DebugMotors extends LinearOpMode
+{
     private static final double MOTOR_POWER = 1.0;
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor fL;
-    private DcMotor fR;
-    private DcMotor bL;
-    private DcMotor bR;
+    private ElapsedTime         runtime     = new ElapsedTime();
+    private DcMotor             fL;
+    private DcMotor             fR;
+    private DcMotor             bL;
+    private DcMotor             bR;
 
-    @Override
-    public void runOpMode() {
-
+    @Override public void runOpMode()
+    {
         fL = hardwareMap.get(DcMotor.class, "leftFront");
         fR = hardwareMap.get(DcMotor.class, "rightFront");
         bL = hardwareMap.get(DcMotor.class, "leftBack");
@@ -36,7 +35,8 @@ public class DebugMotors extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             // Map all 4 buttons on the PS controller to 4 motors.
             // Hold button = forward, hold button + left bumper = reverse
             double direction = gamepad1.left_bumper ? -1.0 : 1.0;
@@ -58,8 +58,10 @@ public class DebugMotors extends LinearOpMode {
         }
     }
 
-    private String getMotorStatus(boolean pressed, double direction) {
-        if (!pressed) return "off";
+    private String getMotorStatus(boolean pressed, double direction)
+    {
+        if (!pressed)
+            return "off";
         return direction > 0 ? "FORWARD" : "REVERSE";
     }
 }

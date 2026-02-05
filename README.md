@@ -1,9 +1,10 @@
 # Limelight Robotics 2026 Season
 The source code for the robot in the 2025-2026 season.
 
+## Table of Contents
+- [Configuration](#control-hub-configurations)
 
 # Control Hub Configurations
-
 ## Control Hub
 ### Motors
 GoBilda 5202/3/4 series
@@ -21,4 +22,13 @@ GoBilda 5202/3/4 series
 - 0 - turret
 - 1 - intake
 - 2 - cableDrive
-- 
+
+## Scripts
+### `./build-and-deploy.sh`
+Build and/or deploy the robot code.
+
+* `--clean` - Clean build output, then build and/or deploy
+* `--build-only` - Only build, don't deploy
+
+### `./format.sh`
+Format all Java files in `TeamCode/`.

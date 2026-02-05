@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Encapsulates drive motor direction presets for each wheel position.
  * Provides base directions for FL, FR, BL, and BR motors.
  */
-public class DriveDirectionPresets {
+public class DriveDirectionPresets
+{
     // Base directions for the logical wheel positions
     private static final DcMotor.Direction FL_BASE = DcMotor.Direction.FORWARD;
     private static final DcMotor.Direction FR_BASE = DcMotor.Direction.REVERSE;
@@ -16,7 +17,8 @@ public class DriveDirectionPresets {
     /**
      * Apply base directions to motors.
      */
-    public void applyTo(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br) {
+    public void applyTo(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br)
+    {
         fl.setDirection(FL_BASE);
         fr.setDirection(FR_BASE);
         bl.setDirection(BL_BASE);

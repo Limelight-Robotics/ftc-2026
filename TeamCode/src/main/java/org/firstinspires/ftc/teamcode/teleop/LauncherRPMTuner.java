@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
 import org.firstinspires.ftc.teamcode.classes.Vision;
 
@@ -23,44 +22,50 @@ import org.firstinspires.ftc.teamcode.classes.Vision;
  *   4. Repeat at 3-5 distances, then update RPM_TABLE in LauncherHelper
  */
 @TeleOp(name = "Launcher RPM Tuner", group = "Diagnostic")
-public class LauncherRPMTuner extends LinearOpMode {
-
+public class LauncherRPMTuner extends LinearOpMode
+{
     private static final String TURRET_MOTOR_NAME = "turret";
-    private static final double TICKS_PER_REV = 28.0;
-    private static final double MIN_RPM = 0;
-    private static final double MAX_RPM = 8000;
+    private static final double TICKS_PER_REV     = 28.0;
+    private static final double MIN_RPM           = 0;
+    private static final double MAX_RPM           = 8000;
 
-    @Override
-    public void runOpMode() {
+    @Override public void runOpMode()
+    {
         // Init motor
         DcMotorEx motor = null;
-        try {
+        try
+        {
             motor = hardwareMap.get(DcMotorEx.class, TURRET_MOTOR_NAME);
             motor.setPower(0.0);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             telemetry.addData("ERROR", "Turret motor not found: " + e.getMessage());
         }
 
         // Init vision (optional — shows distance if AprilTag visible)
-        DefaultRobot robot = new DefaultRobot();
-        Vision vision = null;
-        try {
+        DefaultRobot robot  = new DefaultRobot();
+        Vision       vision = null;
+        try
+        {
             robot.init(hardwareMap);
             vision = robot.getVision();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             telemetry.addData("Vision", "Not available: " + e.getMessage());
         }
 
-        double targetRPM = 2000;
+        double  targetRPM    = 2000;
         boolean motorRunning = false;
 
         // Previous d-pad / button states for edge detection
-        boolean prevDpadUp = false;
-        boolean prevDpadDown = false;
-        boolean prevDpadLeft = false;
+        boolean prevDpadUp    = false;
+        boolean prevDpadDown  = false;
+        boolean prevDpadLeft  = false;
         boolean prevDpadRight = false;
-        boolean prevA = false;
-        boolean prevB = false;
+        boolean prevA         = false;
+        boolean prevB         = false;
 
         telemetry.addData("Status", "Initialized — press Play to start");
         telemetry.addData("Controls", "D-pad ↑↓ ±500 | D-pad ←→ ±100 | A toggle | B stop");
@@ -68,51 +73,63 @@ public class LauncherRPMTuner extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             // --- Edge-detected RPM adjustments ---
-            if (gamepad1.dpad_up && !prevDpadUp) {
+            if (gamepad1.dpad_up && !prevDpadUp)
+            {
                 targetRPM = Math.min(targetRPM + 500, MAX_RPM);
             }
-            if (gamepad1.dpad_down && !prevDpadDown) {
+            if (gamepad1.dpad_down && !prevDpadDown)
+            {
                 targetRPM = Math.max(targetRPM - 500, MIN_RPM);
             }
-            if (gamepad1.dpad_right && !prevDpadRight) {
+            if (gamepad1.dpad_right && !prevDpadRight)
+            {
                 targetRPM = Math.min(targetRPM + 100, MAX_RPM);
             }
-            if (gamepad1.dpad_left && !prevDpadLeft) {
+            if (gamepad1.dpad_left && !prevDpadLeft)
+            {
                 targetRPM = Math.max(targetRPM - 100, MIN_RPM);
             }
 
             // --- Toggle motor on/off ---
-            if (gamepad1.a && !prevA) {
+            if (gamepad1.a && !prevA)
+            {
                 motorRunning = !motorRunning;
             }
-            if (gamepad1.b && !prevB) {
+            if (gamepad1.b && !prevB)
+            {
                 motorRunning = false;
             }
 
             // --- Save previous button states ---
-            prevDpadUp = gamepad1.dpad_up;
-            prevDpadDown = gamepad1.dpad_down;
-            prevDpadLeft = gamepad1.dpad_left;
+            prevDpadUp    = gamepad1.dpad_up;
+            prevDpadDown  = gamepad1.dpad_down;
+            prevDpadLeft  = gamepad1.dpad_left;
             prevDpadRight = gamepad1.dpad_right;
-            prevA = gamepad1.a;
-            prevB = gamepad1.b;
+            prevA         = gamepad1.a;
+            prevB         = gamepad1.b;
 
             // --- Apply motor velocity ---
             double actualRPM = 0;
-            if (motor != null) {
-                if (motorRunning && targetRPM > 0) {
+            if (motor != null)
+            {
+                if (motorRunning && targetRPM > 0)
+                {
                     double ticksPerSec = targetRPM * TICKS_PER_REV / 60.0;
                     motor.setVelocity(ticksPerSec);
-                } else {
+                }
+                else
+                {
                     motor.setVelocity(0);
                 }
                 actualRPM = motor.getVelocity() * 60.0 / TICKS_PER_REV;
             }
 
             // --- Update vision ---
-            if (vision != null) {
+            if (vision != null)
+            {
                 vision.update();
             }
 
@@ -125,7 +142,8 @@ public class LauncherRPMTuner extends LinearOpMode {
             telemetry.addData("Controls", "D-pad ↑↓ ±500 | ←→ ±100");
             telemetry.addData("", "A = toggle motor | B = stop");
 
-            if (vision != null && vision.hasTarget()) {
+            if (vision != null && vision.hasTarget())
+            {
                 telemetry.addLine();
                 telemetry.addLine("=== VISION ===");
                 telemetry.addData("Distance (m)", "%.2f", vision.getDistanceToGoalMeters());
@@ -136,7 +154,8 @@ public class LauncherRPMTuner extends LinearOpMode {
         }
 
         // Cleanup
-        if (motor != null) {
+        if (motor != null)
+        {
             motor.setVelocity(0);
             motor.setPower(0.0);
         }

@@ -1,0 +1,15 @@
+Language: Java
+BasedOnStyle: Google
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AllowShortFunctionsOnASingleLine: Inline
+BreakBeforeBraces: Allman
+SpaceAfterControlStatementKeyword: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceBeforeAssignmentOperators: true
+SortIncludes: false

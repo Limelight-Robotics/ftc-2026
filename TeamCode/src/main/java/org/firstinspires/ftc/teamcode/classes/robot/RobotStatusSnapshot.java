@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode.classes.robot;
 /**
  * Immutable snapshot implementation of RobotStatus.
  */
-public final class RobotStatusSnapshot implements RobotStatus {
+public final class RobotStatusSnapshot implements RobotStatus
+{
     private final double frontLeftPower;
     private final double frontRightPower;
     private final double backLeftPower;
@@ -13,20 +14,19 @@ public final class RobotStatusSnapshot implements RobotStatus {
     private final double lastRotate;
     private final double intakePower;
 
-    private RobotStatusSnapshot(Builder builder) {
-        this.frontLeftPower = builder.frontLeftPower;
+    private RobotStatusSnapshot(Builder builder)
+    {
+        this.frontLeftPower  = builder.frontLeftPower;
         this.frontRightPower = builder.frontRightPower;
-        this.backLeftPower = builder.backLeftPower;
-        this.backRightPower = builder.backRightPower;
-        this.lastForward = builder.lastForward;
-        this.lastStrafe = builder.lastStrafe;
-        this.lastRotate = builder.lastRotate;
-        this.intakePower = builder.intakePower;
+        this.backLeftPower   = builder.backLeftPower;
+        this.backRightPower  = builder.backRightPower;
+        this.lastForward     = builder.lastForward;
+        this.lastStrafe      = builder.lastStrafe;
+        this.lastRotate      = builder.lastRotate;
+        this.intakePower     = builder.intakePower;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    public static Builder builder() { return new Builder(); }
 
     @Override public double getFrontLeftPower() { return frontLeftPower; }
     @Override public double getFrontRightPower() { return frontRightPower; }
@@ -38,7 +38,8 @@ public final class RobotStatusSnapshot implements RobotStatus {
     @Override public double getIntakePower() { return intakePower; }
 
     /** Fluent builder for RobotStatusSnapshot. */
-    public static class Builder {
+    public static class Builder
+    {
         private double frontLeftPower;
         private double frontRightPower;
         private double backLeftPower;
@@ -48,17 +49,47 @@ public final class RobotStatusSnapshot implements RobotStatus {
         private double lastRotate;
         private double intakePower;
 
-        public Builder frontLeftPower(double v) { this.frontLeftPower = v; return this; }
-        public Builder frontRightPower(double v) { this.frontRightPower = v; return this; }
-        public Builder backLeftPower(double v) { this.backLeftPower = v; return this; }
-        public Builder backRightPower(double v) { this.backRightPower = v; return this; }
-        public Builder lastForward(double v) { this.lastForward = v; return this; }
-        public Builder lastStrafe(double v) { this.lastStrafe = v; return this; }
-        public Builder lastRotate(double v) { this.lastRotate = v; return this; }
-        public Builder intakePower(double v) { this.intakePower = v; return this; }
-
-        public RobotStatusSnapshot build() {
-            return new RobotStatusSnapshot(this);
+        public Builder frontLeftPower(double v)
+        {
+            this.frontLeftPower = v;
+            return this;
         }
+        public Builder frontRightPower(double v)
+        {
+            this.frontRightPower = v;
+            return this;
+        }
+        public Builder backLeftPower(double v)
+        {
+            this.backLeftPower = v;
+            return this;
+        }
+        public Builder backRightPower(double v)
+        {
+            this.backRightPower = v;
+            return this;
+        }
+        public Builder lastForward(double v)
+        {
+            this.lastForward = v;
+            return this;
+        }
+        public Builder lastStrafe(double v)
+        {
+            this.lastStrafe = v;
+            return this;
+        }
+        public Builder lastRotate(double v)
+        {
+            this.lastRotate = v;
+            return this;
+        }
+        public Builder intakePower(double v)
+        {
+            this.intakePower = v;
+            return this;
+        }
+
+        public RobotStatusSnapshot build() { return new RobotStatusSnapshot(this); }
     }
 }
