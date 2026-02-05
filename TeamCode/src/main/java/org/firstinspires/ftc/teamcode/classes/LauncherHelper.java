@@ -49,10 +49,10 @@ public final class LauncherHelper {
     }
 
     /**
-     * Check if the launcher is within 95% of the target RPM (ready to fire).
+     * Check if the launcher is within 98% of the target RPM (ready to fire).
      */
     public static boolean isAtTargetRPM(double currentRPM, double targetRPM) {
         if (targetRPM <= 0) return false;
-        return currentRPM >= targetRPM * 0.95;
+        return currentRPM >= targetRPM * 0.98;
     }
 }
