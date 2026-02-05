@@ -164,9 +164,8 @@ public abstract class BaseManualDrive extends LinearOpMode
         // Skip turret aim control while launcher is spinning up
         if (gamepad1.right_stick_button)
             return;
-        // Only allow positive (right trigger) power for turret motor.
-        setMotorPowerFromGamepad(turretMotor, false,
-            gamepad1.right_trigger > 0.0, MAX_TURRET_POWER);
+        // X button runs turret motor forward
+        setMotorPowerFromGamepad(turretMotor, false, gamepad1.x, MAX_TURRET_POWER);
     }
 
     private void processCableDriveInput()
