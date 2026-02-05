@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
- * Reduced-speed manual drive mode. Provides 10% joystick-to-motor control
+ * Reduced-speed manual drive mode. Provides 50% joystick-to-motor control
  * for more precise maneuvering. Includes intake cycling via the Y button.
  */
 @TeleOp(name = "Slow Manual Drive", group = "1 - Team Code")
