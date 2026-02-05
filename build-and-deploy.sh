@@ -5,8 +5,35 @@
 
 set -e  # Exit on error
 
-# Handle --clean flag to force a clean build (useful when cache gets corrupted)
-if [ "$1" = "--clean" ]; then
+# Simple argument parsing
+CLEAN=false
+BUILD_ONLY=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --clean|-c)
+            CLEAN=true
+            shift
+            ;;
+        --build-only|--build|-b)
+            BUILD_ONLY=true
+            shift
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--clean] [--build-only]"
+            echo "  --clean, -c       : run './gradlew clean' before building"
+            echo "  --build-only, -b  : build the APK but skip deploying to device"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage."
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$CLEAN" = true ]; then
     echo "🧹 Cleaning build..."
     ./gradlew clean
     echo ""
@@ -27,7 +54,11 @@ print_elapsed() {
 trap 'print_elapsed' EXIT
 
 echo "======================================"
-echo "FTC Robot Controller - Build & Deploy"
+if [ "$BUILD_ONLY" = true ]; then
+    echo "FTC Robot Controller - Build"
+else
+    echo "FTC Robot Controller - Build & Deploy"
+fi
 echo "======================================"
 echo ""
 
@@ -43,6 +74,11 @@ fi
 echo ""
 echo "✅ Build successful!"
 echo ""
+
+if [ "$BUILD_ONLY" = true ]; then
+    echo "🔧 Build-only flag set; skipping deploy."
+    exit 0
+fi
 
 # Configuration
 WIFI_DEVICE_IP="192.168.43.1"
