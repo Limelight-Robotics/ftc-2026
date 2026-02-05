@@ -24,11 +24,11 @@ public abstract class BaseManualDrive extends LinearOpMode
     private static final String INTAKE_MOTOR_NAME = "intake";
     private static final double MAX_INTAKE_POWER  = 1.0;
 
-    // Turret / Launchers
+    // Launcher
     private DcMotorEx           turretMotor;
     private static final String TURRET_MOTOR_NAME      = "turret";
-    private static final double MAX_TURRET_POWER       = 1.0;
     private static final double LAUNCHER_TICKS_PER_REV = 28.0;
+    private static final double LAUNCHER_TARGET_RPM    = 3000.0;
 
     // Cable Drive
     private DcMotor             cableDriveMotor;
@@ -60,7 +60,6 @@ public abstract class BaseManualDrive extends LinearOpMode
             processTurretInput();
             processCableDriveInput();
             processLoaderInput();
-            processLauncherInput();
             robot.updateLocalizer();
             vision.update();
             updateTelemetry();
@@ -115,37 +114,6 @@ public abstract class BaseManualDrive extends LinearOpMode
         }
     }
 
-    /**
-     * Launcher control: Hold right stick button to spin up launcher to
-     * vision-calculated RPM. When button is released, processTurretInput()
-     * resumes normal turret control (including stopping the motor if triggers
-     * aren't held).
-     */
-    private void processLauncherInput()
-    {
-        if (turretMotor == null || !gamepad1.right_stick_button)
-            return;
-
-        double targetRPM = LauncherHelper.getRequiredRPM(vision);
-
-        if (targetRPM <= 0)
-        {
-            turretMotor.setVelocity(0);
-            telemetry.addData("Launcher", "NO TARGET");
-            return;
-        }
-
-        double ticksPerSec = targetRPM * LAUNCHER_TICKS_PER_REV / 60.0;
-        turretMotor.setVelocity(ticksPerSec);
-
-        double  actualTicksPerSec = turretMotor.getVelocity();
-        double  actualRPM         = actualTicksPerSec * 60.0 / LAUNCHER_TICKS_PER_REV;
-        boolean ready             = LauncherHelper.isAtTargetRPM(actualRPM, targetRPM);
-
-        telemetry.addData("Launcher", "Target: %.0f RPM | Actual: %.0f RPM | %s", targetRPM,
-            actualRPM, ready ? "READY" : "SPINNING UP");
-    }
-
     private void processDriveInput()
     {
         double mult = getSpeedMultiplier();
@@ -159,13 +127,38 @@ public abstract class BaseManualDrive extends LinearOpMode
             intakeMotor, gamepad1.left_bumper, gamepad1.right_bumper, MAX_INTAKE_POWER);
     }
 
+    /**
+     * Launcher control: Hold X button to spin up launcher to fixed target RPM.
+     * When at speed (98% of target), automatically raises the loader servo.
+     * When X is released, stops the motor and lowers the loader.
+     */
     private void processTurretInput()
     {
-        // Skip turret aim control while launcher is spinning up
-        if (gamepad1.right_stick_button)
+        if (turretMotor == null)
             return;
-        // X button runs turret motor forward
-        setMotorPowerFromGamepad(turretMotor, false, gamepad1.x, MAX_TURRET_POWER);
+
+        if (gamepad1.x)
+        {
+            double ticksPerSec = LAUNCHER_TARGET_RPM * LAUNCHER_TICKS_PER_REV / 60.0;
+            turretMotor.setVelocity(ticksPerSec);
+
+            double  actualTicksPerSec = turretMotor.getVelocity();
+            double  actualRPM         = actualTicksPerSec * 60.0 / LAUNCHER_TICKS_PER_REV;
+            boolean atSpeed           = LauncherHelper.isAtTargetRPM(actualRPM, LAUNCHER_TARGET_RPM);
+
+            if (atSpeed)
+            {
+                robot.raiseLoader();
+            }
+
+            telemetry.addData("Launcher", "Target: %.0f RPM | Actual: %.0f RPM | %s",
+                LAUNCHER_TARGET_RPM, actualRPM, atSpeed ? "FIRING" : "SPINNING UP");
+        }
+        else
+        {
+            turretMotor.setVelocity(0);
+            robot.lowerLoader();
+        }
     }
 
     private void processCableDriveInput()
@@ -224,7 +217,7 @@ public abstract class BaseManualDrive extends LinearOpMode
         RobotStatus status = robot.getStatus();
         Pose2d      pose   = robot.getPose();
         addLocalizerTelemetry();
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Pose", "X: %.2f, Y: %.2f, H: %.1f°", pose.position.x, pose.position.y,
             Math.toDegrees(pose.heading.toDouble()));
         telemetry.addData("Drive Powers", "FL: %.2f, FR: %.2f, BL: %.2f, BR: %.2f",
