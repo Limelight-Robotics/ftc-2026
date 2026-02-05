@@ -169,7 +169,7 @@ public class Vision {
      * @return true if Limelight is available
      */
     public boolean isConnected() {
-        return limelight != null;
+        return limelight != null && limelight.isConnected();
     }
 
     /**

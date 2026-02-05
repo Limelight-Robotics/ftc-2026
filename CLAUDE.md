@@ -60,7 +60,7 @@ Gamepad 1 Controls:
 | Right trigger | Turret right |
 | D-pad left | Cable drive reverse |
 | D-pad right | Cable drive forward |
-| Right stick button | Launcher (set RPM for trajectory - WIP) |
+| Right stick button (hold) | Launcher spin-up (vision-based RPM) |
 
 Speed variants:
 - `ManualDrive`: Full speed (1.0x)
@@ -92,27 +92,29 @@ The robot uses a Limelight 3A camera to track AprilTags on the goal for vision-a
 
 ### LauncherHelper (Trajectory Math)
 
-`LauncherHelper` (`classes/LauncherHelper.java`) calculates the required launcher wheel RPM to hit the goal using projectile motion physics and vision data.
+`LauncherHelper` (`classes/LauncherHelper.java`) calculates the required launcher wheel RPM using an empirical lookup table and vision distance data.
 
 **How it works:**
-1. Gets distance and height to goal from the `Vision` subsystem
-2. Uses a fixed 30° launch angle
-3. Applies projectile motion formula: `v = sqrt(g * d² / (2 * cos²(θ) * (d * tan(θ) - h)))`
-4. Multiplies by `VELOCITY_FUDGE_FACTOR` (default 1.0) to compensate for real-world losses (wheel slip, air resistance, ball compression)
-5. Converts linear velocity to wheel RPM assuming ball exits at wheel rim speed (`v = ω * r`, wheel radius = 1 inch)
+1. Gets horizontal distance to goal from the `Vision` subsystem
+2. Looks up RPM from `RPM_TABLE` — a `double[][]` of `{distance_meters, rpm}` pairs
+3. Linearly interpolates between the two nearest entries; clamps at boundaries
+4. Returns 0 if no AprilTag target is visible
 
-**Key constants:**
-- `LAUNCHER_WHEEL_RADIUS` — 1 inch (0.0254m)
-- `VELOCITY_FUDGE_FACTOR` — tunable multiplier (increase if shots fall short, decrease if they overshoot; typical range 1.1–1.5)
+**Key methods:**
+- `lookupRPM(double distanceMeters)` — interpolate RPM from table
+- `getRequiredRPM(Vision vision)` — returns target RPM (0 if no target)
+- `isAtTargetRPM(double currentRPM, double targetRPM)` — true when within 95% of target
 
-**Usage:**
+**Usage (in BaseManualDrive):**
 ```java
-double targetRPM = LauncherHelper.calculateRequiredRPM(robot);
-// Use velocity control mode, NOT power mode
-launcherMotor.setVelocity(targetRPM * TICKS_PER_REV / 60.0);
+double targetRPM = LauncherHelper.getRequiredRPM(vision);
+double ticksPerSec = targetRPM * LAUNCHER_TICKS_PER_REV / 60.0;
+turretMotor.setVelocity(ticksPerSec);  // DcMotorEx velocity control
 ```
 
-**Alternative approach:** The class documents a lookup table strategy for when physics-based calculation is consistently inaccurate — measure RPM at 4-5 known distances and interpolate between them.
+**Tuning the lookup table:** Set launcher to a known RPM, measure where the ball lands. Repeat at 4-5 distances across the expected range. Update `RPM_TABLE` with the measured `{distance, rpm}` pairs.
+
+The turret motor doubles as the launcher motor (`DcMotorEx`, GoBILDA 5203, 28 ticks/rev). Hold right stick button to spin up; triggers still aim the turret when not launching.
 
 **Autonomous**: Direct `MecanumDrive` initialization with start pose, RoadRunner trajectory building (`.lineToY()`, `.turn()`, etc.), blocking action execution via `Actions.runBlocking()`.
 
@@ -129,7 +131,7 @@ launcherMotor.setVelocity(targetRPM * TICKS_PER_REV / 60.0);
 - Hardware names: `"leftFront"`, `"rightFront"`, `"leftBack"`, `"rightBack"`
 - Optional hardware wrapped in try-catch with null checks
 - `@Config` annotation enables FTC Dashboard parameter tuning
-- `Utilities.java` contains mecanum normalization and physics helpers
+- `Utilities.java` contains mecanum normalization helpers
 
 ## Limelight 3A Vision System
 

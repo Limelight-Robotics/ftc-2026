@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   X - Back Left
  *   A - Back Right
  */
-@TeleOp(name = "Debug Motors", group = "Linear OpMode")
+@TeleOp(name = "Debug Motors", group = "Diagnostic")
 public class DebugMotors extends LinearOpMode {
     private static final double MOTOR_POWER = 1.0;
     private ElapsedTime runtime = new ElapsedTime();

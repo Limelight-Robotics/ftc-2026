@@ -4,7 +4,9 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
+import org.firstinspires.ftc.teamcode.classes.LauncherHelper;
 import org.firstinspires.ftc.teamcode.classes.Vision;
 import org.firstinspires.ftc.teamcode.classes.robot.RobotStatus;
 
@@ -21,10 +23,11 @@ public abstract class BaseManualDrive extends LinearOpMode {
     private static final String INTAKE_MOTOR_NAME = "intake";
     private static final double MAX_INTAKE_POWER = 1.0;
 
-    // Turret
-    private DcMotor turretMotor;
+    // Turret / Launcher (same motor)
+    private DcMotorEx turretMotor;
     private static final String TURRET_MOTOR_NAME = "turret";
     private static final double MAX_TURRET_POWER = 1.0;
+    private static final double LAUNCHER_TICKS_PER_REV = 28.0;
 
     // Cable Drive
     private DcMotor cableDriveMotor;
@@ -41,7 +44,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
         intakeMotor = getMotorOrNull(INTAKE_MOTOR_NAME);
-        turretMotor = getMotorOrNull(TURRET_MOTOR_NAME);
+        turretMotor = getMotorExOrNull(TURRET_MOTOR_NAME);
         cableDriveMotor = getMotorOrNull(CABLE_DRIVE_MOTOR_NAME);
         vision = robot.getVision();
         telemetry.addData("Status", "Initialized");
@@ -74,12 +77,43 @@ public abstract class BaseManualDrive extends LinearOpMode {
         }
     }
 
+    private DcMotorEx getMotorExOrNull(String name) {
+        try {
+            DcMotorEx m = hardwareMap.get(DcMotorEx.class, name);
+            m.setPower(0.0);
+            return m;
+        } catch (Exception e) {
+            telemetry.addData("Error", "Failed to init " + name + ": " + e.getMessage());
+            telemetry.update();
+            return null;
+        }
+    }
+
     /**
-     * Launcher control: Press right stick button to set launcher RPM for trajectory.
+     * Launcher control: Hold right stick button to spin up launcher to vision-calculated RPM.
+     * When button is released, processTurretInput() resumes normal turret control (including
+     * stopping the motor if triggers aren't held).
      */
     private void processLauncherInput() {
-        if (turretMotor == null) return;
-        // 
+        if (turretMotor == null || !gamepad1.right_stick_button) return;
+
+        double targetRPM = LauncherHelper.getRequiredRPM(vision);
+
+        if (targetRPM <= 0) {
+            turretMotor.setVelocity(0);
+            telemetry.addData("Launcher", "NO TARGET");
+            return;
+        }
+
+        double ticksPerSec = targetRPM * LAUNCHER_TICKS_PER_REV / 60.0;
+        turretMotor.setVelocity(ticksPerSec);
+
+        double actualTicksPerSec = turretMotor.getVelocity();
+        double actualRPM = actualTicksPerSec * 60.0 / LAUNCHER_TICKS_PER_REV;
+        boolean ready = LauncherHelper.isAtTargetRPM(actualRPM, targetRPM);
+
+        telemetry.addData("Launcher", "Target: %.0f RPM | Actual: %.0f RPM | %s",
+                targetRPM, actualRPM, ready ? "READY" : "SPINNING UP");
     }
 
     private void processDriveInput() {
@@ -99,6 +133,8 @@ public abstract class BaseManualDrive extends LinearOpMode {
     }
 
     private void processTurretInput() {
+        // Skip turret aim control while launcher is spinning up
+        if (gamepad1.right_stick_button) return;
         // The triggers are as floats, so we need boolean conversion.
         setMotorPowerFromGamepad(
                 turretMotor,

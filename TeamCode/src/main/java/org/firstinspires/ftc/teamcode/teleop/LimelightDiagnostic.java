@@ -21,8 +21,10 @@ public class LimelightDiagnostic extends LinearOpMode {
         try {
             limelight = hardwareMap.get(Limelight3A.class, "limelight");
             limelight.setPollRateHz(100);
-            limelight.pipelineSwitch(0);
             limelight.start();
+            sleep(1000);  // Give Limelight time to initialize
+            limelight.pipelineSwitch(0);  // Switch pipeline after start
+
             telemetry.addData("Init", "Limelight initialized OK");
         } catch (Exception e) {
             telemetry.addData("Init", "FAILED: " + e.getMessage());
@@ -39,6 +41,12 @@ public class LimelightDiagnostic extends LinearOpMode {
                 continue;
             }
 
+            // Connection health
+            telemetry.addLine("=== CONNECTION ===");
+            telemetry.addData("isConnected", limelight.isConnected());
+            telemetry.addData("isRunning", limelight.isRunning());
+            telemetry.addData("TimeSinceUpdate (ms)", limelight.getTimeSinceLastUpdate());
+
             // Status info
             LLStatus status = limelight.getStatus();
             telemetry.addLine("=== STATUS ===");
@@ -47,6 +55,8 @@ public class LimelightDiagnostic extends LinearOpMode {
                 telemetry.addData("Pipeline Type", status.getPipelineType());
                 telemetry.addData("Temp (C)", "%.1f", status.getTemp());
                 telemetry.addData("FPS", "%.0f", status.getFps());
+                telemetry.addData("CPU", "%.1f", status.getCpu());
+                telemetry.addData("RAM", "%.1f", status.getRam());
             } else {
                 telemetry.addData("Status", "null");
             }

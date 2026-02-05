@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Right trigger: rotate turret clockwise
  * Left trigger: rotate turret counterclockwise
  */
-@TeleOp(name = "Manual Turret Control", group = "Turret")
+@TeleOp(name = "Manual Turret Control", group = "Diagnostic")
 public class ManualTurretControl extends LinearOpMode {
     private static final String TURRET_MOTOR_NAME = "turret";
     private static final double MAX_MOTOR_POWER = 0.5;
