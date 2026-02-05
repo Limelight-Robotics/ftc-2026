@@ -3,6 +3,7 @@ The source code for the robot in the 2025-2026 season.
 
 ## Table of Contents
 - [Configuration](#control-hub-configurations)
+- [Scripts](#scripts)
 
 # Control Hub Configurations
 ## Control Hub

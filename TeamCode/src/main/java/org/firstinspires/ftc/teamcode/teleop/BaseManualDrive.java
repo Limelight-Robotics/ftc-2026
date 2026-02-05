@@ -24,7 +24,7 @@ public abstract class BaseManualDrive extends LinearOpMode
     private static final String INTAKE_MOTOR_NAME = "intake";
     private static final double MAX_INTAKE_POWER  = 1.0;
 
-    // Turret / Launcher (same motor)
+    // Turret / LauncherS
     private DcMotorEx           turretMotor;
     private static final String TURRET_MOTOR_NAME      = "turret";
     private static final double MAX_TURRET_POWER       = 1.0;
