@@ -114,9 +114,9 @@ find_device() {
         echo "⚠️  No device found (attempt $attempt/$MAX_RETRIES)" >&2
 
         if [ $attempt -lt $MAX_RETRIES ]; then
-            restart_adb_server
+            restart_adb_server >&2
             # Only try WiFi reconnect if no USB device found
-            reconnect_wifi_device
+            reconnect_wifi_device >&2
         fi
 
         attempt=$((attempt + 1))
