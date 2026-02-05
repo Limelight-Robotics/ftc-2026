@@ -4,6 +4,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.classes.robot.DriveSubsystem;
@@ -14,8 +16,13 @@ public class DefaultRobot
 {
     private DriveSubsystem          drive       = null;
     private DcMotor                 intakeMotor = null;
+    private Servo                   loaderServo = null;
     private ThreeDeadWheelLocalizer localizer   = null;
     private Vision                  vision      = null;
+
+    // Loader servo positions
+    public static final double LOADER_UP_POSITION   = 1.0;
+    public static final double LOADER_DOWN_POSITION = 0.0;
 
     public ThreeDeadWheelLocalizer getLocalizer() { return localizer; }
     private PoseVelocity2d         lastVelocity = new com.acmerobotics.roadrunner.PoseVelocity2d(
@@ -27,6 +34,7 @@ public class DefaultRobot
     {
         drive = new DriveSubsystem(hardwareMap);
         initIntakeMotor(hardwareMap);
+        initLoaderServo(hardwareMap);
         initLocalizer(hardwareMap);
         vision = new Vision(hardwareMap);
     }
@@ -42,6 +50,31 @@ public class DefaultRobot
         {
             intakeMotor = null;
         }
+    }
+
+    private void initLoaderServo(HardwareMap hardwareMap)
+    {
+        try
+        {
+            loaderServo = hardwareMap.get(Servo.class, "loader");
+        }
+        catch (Exception e)
+        {
+            loaderServo = null;
+            // Log will show in logcat if init fails
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isLoaderInitialized() { return loaderServo != null; }
+
+    public double getLoaderPosition()
+    {
+        if (loaderServo != null)
+        {
+            return loaderServo.getPosition();
+        }
+        return -1.0;
     }
 
     private void initLocalizer(HardwareMap hardwareMap)
@@ -96,6 +129,18 @@ public class DefaultRobot
             intakeMotor.setPower(-intakePower);
         }
     }
+
+    public void setLoaderPosition(double position)
+    {
+        if (loaderServo != null)
+        {
+            loaderServo.setPosition(position);
+        }
+    }
+
+    public void raiseLoader() { setLoaderPosition(LOADER_UP_POSITION); }
+
+    public void lowerLoader() { setLoaderPosition(LOADER_DOWN_POSITION); }
 
     public Pose2d updateLocalizer()
     {

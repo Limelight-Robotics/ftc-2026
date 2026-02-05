@@ -59,6 +59,7 @@ public abstract class BaseManualDrive extends LinearOpMode
             processIntakeInput();
             processTurretInput();
             processCableDriveInput();
+            processLoaderInput();
             processLauncherInput();
             robot.updateLocalizer();
             vision.update();
@@ -96,6 +97,21 @@ public abstract class BaseManualDrive extends LinearOpMode
             telemetry.addData("Error", "Failed to init " + name + ": " + e.getMessage());
             telemetry.update();
             return null;
+        }
+    }
+
+    /**
+     * Loader servo control: D-pad up raises the loader, D-pad down lowers it.
+     */
+    private void processLoaderInput()
+    {
+        if (gamepad1.dpad_up)
+        {
+            robot.raiseLoader();
+        }
+        else if (gamepad1.dpad_down)
+        {
+            robot.lowerLoader();
         }
     }
 
@@ -218,6 +234,9 @@ public abstract class BaseManualDrive extends LinearOpMode
         telemetry.addData("Inputs", "Fwd: %.2f, Str: %.2f, Rot: %.2f", status.getLastForward(),
             status.getLastStrafe(), status.getLastRotate());
         telemetry.addData("Intake Power", "%.2f", status.getIntakePower());
+        telemetry.addData("Loader", "Init: %s | Pos: %.2f | DpadUp: %s | DpadDown: %s",
+            robot.isLoaderInitialized(), robot.getLoaderPosition(), gamepad1.dpad_up,
+            gamepad1.dpad_down);
         telemetry.addData("Vision", vision.getStatusString());
         telemetry.update();
     }
