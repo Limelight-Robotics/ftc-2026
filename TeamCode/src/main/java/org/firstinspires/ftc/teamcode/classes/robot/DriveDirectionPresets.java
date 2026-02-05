@@ -3,9 +3,8 @@ package org.firstinspires.ftc.teamcode.classes.robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
- * Encapsulates drive motor direction presets using a 4-bit bitmask.
- * Each bit controls whether a motor direction is inverted from baseline.
- * Bit 0: FL, Bit 1: FR, Bit 2: BL, Bit 3: BR
+ * Encapsulates drive motor direction presets for each wheel position.
+ * Provides base directions for FL, FR, BL, and BR motors.
  */
 public class DriveDirectionPresets {
     // Base directions for the logical wheel positions
