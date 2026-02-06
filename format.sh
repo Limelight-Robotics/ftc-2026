@@ -16,23 +16,19 @@ fi
 TARGET_DIR="$REPO_ROOT/TeamCode"
 
 if [ ! -d "$TARGET_DIR" ]; then
-    echo "No TeamCode/ directory found at $TARGET_DIR" >&2
+    echo "No "$TARGET_DIR" directory found" >&2
     exit 1
 fi
 
 JS=$(find "$TARGET_DIR" -name "*.java")
 if [ -z "$JS" ]; then
-    echo "No Java files found in TeamCode/. Nothing to format.";
+    echo "No Java files found in "$TARGET_DIR". Nothing to format.";
     exit 0
 fi
 
-echo "Formatting Java files in TeamCode/..."
+echo "Formatting Java files in "$TARGET_DIR"..."
 
-if [ -f "$REPO_ROOT/.clang-format" ]; then
-    find "$TARGET_DIR" -name "*.java" -print0 | xargs -0 clang-format -i -style=file
-else
-    find "$TARGET_DIR" -name "*.java" -print0 | xargs -0 clang-format -i
-fi
+find "$TARGET_DIR" -name "*.java" -exec clang-format -i {} +
 
 COUNT=$(find "$TARGET_DIR" -name "*.java" | wc -l | tr -d '[:space:]')
-echo "Formatted $COUNT Java files in TeamCode/."
+echo "Formatted $COUNT Java files in "$TARGET_DIR"."
