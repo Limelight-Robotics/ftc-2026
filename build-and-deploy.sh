@@ -5,6 +5,14 @@
 
 set -e  # Exit on error
 
+# Ensure Java 21 is used (Gradle 8.9 doesn't support Java 25+)
+if command -v /usr/libexec/java_home &> /dev/null; then
+    JAVA21_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null || true)
+    if [ -n "$JAVA21_HOME" ]; then
+        export JAVA_HOME="$JAVA21_HOME"
+    fi
+fi
+
 # Simple argument parsing
 CLEAN=false
 BUILD_ONLY=false
