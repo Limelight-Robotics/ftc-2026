@@ -49,7 +49,7 @@ TeamCode/src/main/java/org/firstinspires/ftc/teamcode/
 
 **Teleop**: Extend `BaseManualDrive` and override `getSpeedMultiplier()` for speed variants.
 
-`BaseManualDrive` main loop: drive input → intake → turret → cable drive → launcher → localizer update → vision update → telemetry.
+`BaseManualDrive` main loop: drive input → intake → shooter → turret → loader → localizer update → vision update → telemetry.
 
 Gamepad 1 Controls:
 | Control | Action |
@@ -59,17 +59,17 @@ Gamepad 1 Controls:
 | Right stick X | Rotation |
 | Left bumper | Intake reverse |
 | Right bumper | Intake forward |
-| Left trigger | Turret left |
-| Right trigger | Turret right |
-| D-pad left | Cable drive reverse |
-| D-pad right | Cable drive forward |
-| Right stick button (hold) | Launcher spin-up (vision-based RPM) |
+| X button (hold) | Shooter spin-up (fires when at speed) |
+| D-pad left | Turret left (aim) |
+| D-pad right | Turret right (aim) |
+| D-pad up | Loader up |
+| D-pad down | Loader down |
 
 Speed variants:
 - `ManualDrive`: Full speed (1.0x)
 - `SlowManualDrive`: 10% speed (0.1x)
 
-Hardware names for teleop: `"intake"`, `"turret"`, `"cableDrive"` (all optional with null-safe handling)
+Hardware names for teleop: `"intake"`, `"shooter"`, `"turret"` (all optional with null-safe handling)
 
 ### Vision-Assisted Launching
 
@@ -82,8 +82,8 @@ The robot uses a Limelight 3A camera to track AprilTags on the goal for vision-a
 4. From this pose, Vision computes:
    - **Horizontal distance** to goal: `sqrt(x² + z²)` from the X/Z plane
    - **Height difference** to goal: Y component of the pose
-   - **tx/ty**: Raw Limelight angle offsets for turret aiming (tx = horizontal, ty = vertical)
-5. `processLauncherInput()` in `BaseManualDrive` uses the turret motor and vision data to aim and launch (implementation in progress)
+   - **tx/ty**: Raw Limelight angle offsets for aiming (tx = horizontal, ty = vertical)
+5. `processShooterInput()` in `BaseManualDrive` uses the shooter motor and vision data to launch (implementation in progress)
 
 **Vision API:**
 - `vision.hasTarget()` — true if a valid AprilTag is being tracked
@@ -111,13 +111,13 @@ The robot uses a Limelight 3A camera to track AprilTags on the goal for vision-a
 **Usage (in BaseManualDrive):**
 ```java
 double targetRPM = LauncherHelper.getRequiredRPM(vision);
-double ticksPerSec = targetRPM * LAUNCHER_TICKS_PER_REV / 60.0;
-turretMotor.setVelocity(ticksPerSec);  // DcMotorEx velocity control
+double ticksPerSec = targetRPM * SHOOTER_TICKS_PER_REV / 60.0;
+shooterMotor.setVelocity(ticksPerSec);  // DcMotorEx velocity control
 ```
 
-**Tuning the lookup table:** Set launcher to a known RPM, measure where the ball lands. Repeat at 4-5 distances across the expected range. Update `RPM_TABLE` with the measured `{distance, rpm}` pairs.
+**Tuning the lookup table:** Set shooter to a known RPM, measure where the ball lands. Repeat at 4-5 distances across the expected range. Update `RPM_TABLE` with the measured `{distance, rpm}` pairs.
 
-The turret motor doubles as the launcher motor (`DcMotorEx`, GoBILDA 5203, 28 ticks/rev). Hold right stick button to spin up; triggers still aim the turret when not launching.
+The shooter motor (`DcMotorEx`, GoBILDA 5203, 28 ticks/rev) spins up to launch balls. Hold X button to spin up; D-pad left/right controls the turret for aiming.
 
 **Autonomous**: Direct `MecanumDrive` initialization with start pose, RoadRunner trajectory building (`.lineToY()`, `.turn()`, etc.), blocking action execution via `Actions.runBlocking()`.
 

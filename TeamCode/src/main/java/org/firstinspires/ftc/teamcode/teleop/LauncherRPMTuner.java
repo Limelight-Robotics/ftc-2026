@@ -24,10 +24,10 @@ import org.firstinspires.ftc.teamcode.classes.Vision;
 @TeleOp(name = "Launcher RPM Tuner", group = "Diagnostic")
 public class LauncherRPMTuner extends LinearOpMode
 {
-    private static final String TURRET_MOTOR_NAME = "turret";
-    private static final double TICKS_PER_REV     = 28.0;
-    private static final double MIN_RPM           = 0;
-    private static final double MAX_RPM           = 8000;
+    private static final String SHOOTER_MOTOR_NAME = "turret";
+    private static final double TICKS_PER_REV      = 28.0;
+    private static final double MIN_RPM            = 0;
+    private static final double MAX_RPM            = 8000;
 
     @Override public void runOpMode()
     {
@@ -35,12 +35,12 @@ public class LauncherRPMTuner extends LinearOpMode
         DcMotorEx motor = null;
         try
         {
-            motor = hardwareMap.get(DcMotorEx.class, TURRET_MOTOR_NAME);
+            motor = hardwareMap.get(DcMotorEx.class, SHOOTER_MOTOR_NAME);
             motor.setPower(0.0);
         }
         catch (Exception e)
         {
-            telemetry.addData("ERROR", "Turret motor not found: " + e.getMessage());
+            telemetry.addData("ERROR", "Shooter motor not found: " + e.getMessage());
         }
 
         // Init vision (optional — shows distance if AprilTag visible)

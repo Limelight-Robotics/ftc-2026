@@ -24,16 +24,16 @@ public abstract class BaseManualDrive extends LinearOpMode
     private static final String INTAKE_MOTOR_NAME = "intake";
     private static final double MAX_INTAKE_POWER  = 1.0;
 
-    // Launcher
-    private DcMotorEx           turretMotor;
-    private static final String TURRET_MOTOR_NAME      = "turret";
-    private static final double LAUNCHER_TICKS_PER_REV = 28.0;
-    private static final double LAUNCHER_TARGET_RPM    = 3000.0;
+    // Shooter (spins up and launches balls)
+    private DcMotorEx           shooterMotor;
+    private static final String SHOOTER_MOTOR_NAME    = "shooter";
+    private static final double SHOOTER_TICKS_PER_REV = 28.0;
+    private static final double SHOOTER_TARGET_RPM    = 3000.0;
 
-    // Cable Drive
-    private DcMotor             cableDriveMotor;
-    private static final String CABLE_DRIVE_MOTOR_NAME = "cableDrive";
-    private static final double MAX_CABLE_DRIVE_POWER  = 1.0;
+    // Turret (aims the shooter)
+    private DcMotor             turretMotor;
+    private static final String TURRET_MOTOR_NAME = "turret";
+    private static final double MAX_TURRET_POWER  = 1.0;
 
     // Vision
     private Vision vision;
@@ -44,10 +44,10 @@ public abstract class BaseManualDrive extends LinearOpMode
     @Override public void runOpMode()
     {
         robot.init(hardwareMap);
-        intakeMotor     = getMotorOrNull(INTAKE_MOTOR_NAME);
-        turretMotor     = getMotorExOrNull(TURRET_MOTOR_NAME);
-        cableDriveMotor = getMotorOrNull(CABLE_DRIVE_MOTOR_NAME);
-        vision          = robot.getVision();
+        intakeMotor  = getMotorOrNull(INTAKE_MOTOR_NAME);
+        shooterMotor = getMotorExOrNull(SHOOTER_MOTOR_NAME);
+        turretMotor  = getMotorOrNull(TURRET_MOTOR_NAME);
+        vision       = robot.getVision();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -57,8 +57,8 @@ public abstract class BaseManualDrive extends LinearOpMode
         {
             processDriveInput();
             processIntakeInput();
+            processShooterInput();
             processTurretInput();
-            processCableDriveInput();
             processLoaderInput();
             robot.updateLocalizer();
             vision.update();
@@ -128,43 +128,46 @@ public abstract class BaseManualDrive extends LinearOpMode
     }
 
     /**
-     * Launcher control: Hold X button to spin up launcher to fixed target RPM.
+     * Shooter control: Hold X button to spin up shooter to fixed target RPM.
      * When at speed (98% of target), automatically raises the loader servo.
      * When X is released, stops the motor and lowers the loader.
      */
-    private void processTurretInput()
+    private void processShooterInput()
     {
-        if (turretMotor == null)
+        if (shooterMotor == null)
             return;
 
         if (gamepad1.x)
         {
-            double ticksPerSec = LAUNCHER_TARGET_RPM * LAUNCHER_TICKS_PER_REV / 60.0;
-            turretMotor.setVelocity(ticksPerSec);
+            double ticksPerSec = SHOOTER_TARGET_RPM * SHOOTER_TICKS_PER_REV / 60.0;
+            shooterMotor.setVelocity(ticksPerSec);
 
-            double  actualTicksPerSec = turretMotor.getVelocity();
-            double  actualRPM         = actualTicksPerSec * 60.0 / LAUNCHER_TICKS_PER_REV;
-            boolean atSpeed           = LauncherHelper.isAtTargetRPM(actualRPM, LAUNCHER_TARGET_RPM);
+            double  actualTicksPerSec = shooterMotor.getVelocity();
+            double  actualRPM         = actualTicksPerSec * 60.0 / SHOOTER_TICKS_PER_REV;
+            boolean atSpeed           = LauncherHelper.isAtTargetRPM(actualRPM, SHOOTER_TARGET_RPM);
 
             if (atSpeed)
             {
                 robot.raiseLoader();
             }
 
-            telemetry.addData("Launcher", "Target: %.0f RPM | Actual: %.0f RPM | %s",
-                LAUNCHER_TARGET_RPM, actualRPM, atSpeed ? "FIRING" : "SPINNING UP");
+            telemetry.addData("Shooter", "Target: %.0f RPM | Actual: %.0f RPM | %s",
+                SHOOTER_TARGET_RPM, actualRPM, atSpeed ? "FIRING" : "SPINNING UP");
         }
         else
         {
-            turretMotor.setVelocity(0);
+            shooterMotor.setVelocity(0);
             robot.lowerLoader();
         }
     }
 
-    private void processCableDriveInput()
+    /**
+     * Turret control: D-pad left/right rotates the turret for aiming.
+     */
+    private void processTurretInput()
     {
         setMotorPowerFromGamepad(
-            cableDriveMotor, gamepad1.dpad_left, gamepad1.dpad_right, MAX_CABLE_DRIVE_POWER);
+            turretMotor, gamepad1.dpad_left, gamepad1.dpad_right, MAX_TURRET_POWER);
     }
 
     /**
@@ -192,10 +195,10 @@ public abstract class BaseManualDrive extends LinearOpMode
     {
         if (intakeMotor != null)
             intakeMotor.setPower(0.0);
+        if (shooterMotor != null)
+            shooterMotor.setPower(0.0);
         if (turretMotor != null)
             turretMotor.setPower(0.0);
-        if (cableDriveMotor != null)
-            cableDriveMotor.setPower(0.0);
     }
 
     private void addLocalizerTelemetry()

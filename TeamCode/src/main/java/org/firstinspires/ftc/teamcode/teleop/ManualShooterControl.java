@@ -6,22 +6,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * ManualTurretControl provides gamepad control of turret motor.
- * Right trigger: rotate turret clockwise
- * Left trigger: rotate turret counterclockwise
+ * ManualShooterControl provides gamepad control of shooter motor.
+ * Right trigger: spin shooter forward
+ * Left trigger: spin shooter reverse
  */
-@TeleOp(name = "Manual Turret Control", group = "Diagnostic")
-public class ManualTurretControl extends LinearOpMode
+@TeleOp(name = "Manual Shooter Control", group = "Diagnostic")
+public class ManualShooterControl extends LinearOpMode
 {
-    private static final String TURRET_MOTOR_NAME = "turret";
-    private static final double MAX_MOTOR_POWER   = 0.5;
+    private static final String SHOOTER_MOTOR_NAME = "shooter";
+    private static final double MAX_MOTOR_POWER    = 0.5;
 
     private final ElapsedTime runtime = new ElapsedTime();
-    private DcMotor           turretMotor;
+    private DcMotor           shooterMotor;
 
     @Override public void runOpMode()
     {
-        if (!initializeTurret())
+        if (!initializeShooter())
         {
             return;
         }
@@ -33,31 +33,31 @@ public class ManualTurretControl extends LinearOpMode
 
         while (opModeIsActive())
         {
-            double turretPower = computeTurretPower();
-            turretMotor.setPower(turretPower);
-            updateTelemetry(turretPower);
+            double shooterPower = computeShooterPower();
+            shooterMotor.setPower(shooterPower);
+            updateTelemetry(shooterPower);
         }
 
-        turretMotor.setPower(0.0);
+        shooterMotor.setPower(0.0);
     }
 
-    private boolean initializeTurret()
+    private boolean initializeShooter()
     {
         try
         {
-            turretMotor = hardwareMap.get(DcMotor.class, TURRET_MOTOR_NAME);
-            turretMotor.setPower(0.0);
+            shooterMotor = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR_NAME);
+            shooterMotor.setPower(0.0);
             return true;
         }
         catch (Exception e)
         {
-            telemetry.addData("Error", "Failed to init turret: " + e.getMessage());
+            telemetry.addData("Error", "Failed to init shooter: " + e.getMessage());
             telemetry.update();
             return false;
         }
     }
 
-    private double computeTurretPower()
+    private double computeShooterPower()
     {
         double rightTrigger = gamepad1.right_trigger;
         double leftTrigger  = gamepad1.left_trigger;
@@ -67,7 +67,7 @@ public class ManualTurretControl extends LinearOpMode
     private void updateTelemetry(double power)
     {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Turret Power", "%.2f", power);
+        telemetry.addData("Shooter Power", "%.2f", power);
         telemetry.addData(
             "Triggers", "R: %.2f, L: %.2f", gamepad1.right_trigger, gamepad1.left_trigger);
         telemetry.update();

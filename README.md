@@ -20,9 +20,9 @@ GoBilda 5202/3/4 series
 ## Expansion Hub
 ### Motors
 GoBilda 5202/3/4 series
-- 0 - turret
+- 0 - shooter
 - 1 - intake
-- 2 - cableDrive
+- 2 - turret
 
 ## Scripts
 ### `./build-and-deploy.sh`
