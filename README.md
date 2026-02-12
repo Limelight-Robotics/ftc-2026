@@ -5,6 +5,7 @@ The source code for the robot in the 2025-2026 season.
 - [Configuration](#control-hub-configurations)
 - [Controller Map](#controller-map)
 - [Scripts](#scripts)
+- [ADB WiFi Debugging](#adb-wifi-debugging)
 
 # Control Hub Configurations
 ## Control Hub
@@ -110,3 +111,13 @@ Build and/or deploy the robot code.
 
 ### `./format.sh`
 Format all Java files in `TeamCode/`.
+
+# ADB WiFi Debugging
+If ADB over WiFi stops working or can't connect to the Control Hub, reset the connection:
+
+```bash
+adb kill-server
+adb start-server
+adb connect 192.168.43.1:5555
+./gradlew installDebug
+```
