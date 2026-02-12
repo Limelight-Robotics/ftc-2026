@@ -109,9 +109,9 @@ restart_adb_server() {
     # Fall back to full server restart
     echo "🔄 Quick reconnect failed, restarting ADB server..."
     adb kill-server 2>/dev/null
-    sleep 1
-    adb start-server
     sleep 2
+    adb start-server
+    sleep 4
 }
 
 # Function to attempt WiFi reconnection

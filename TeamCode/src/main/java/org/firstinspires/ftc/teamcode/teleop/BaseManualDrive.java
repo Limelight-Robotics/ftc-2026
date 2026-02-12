@@ -122,20 +122,20 @@ public abstract class BaseManualDrive extends LinearOpMode
     private void processIntakeInput()
     {
         setMotorPowerFromGamepad(
-            intakeMotor, gamepad1.right_bumper, gamepad1.left_bumper, MAX_INTAKE_POWER);
+            intakeMotor, gamepad1.cross, gamepad1.square, MAX_INTAKE_POWER);
     }
 
     /**
-     * Shooter control: Hold X button to spin up shooter to fixed target RPM.
+     * Shooter control: Hold R2 trigger to spin up shooter to fixed target RPM.
      * When at speed (98% of target), automatically raises the loader servo.
-     * When X is released, stops the motor and lowers the loader.
+     * When R2 is released, stops the motor and lowers the loader.
      */
     private void processShooterInput()
     {
         if (shooterMotor == null)
             return;
 
-        if (gamepad1.square)
+        if (gamepad1.right_trigger > 0.5)
         {
             double ticksPerSec = SHOOTER_TARGET_RPM * SHOOTER_TICKS_PER_REV / 60.0;
             shooterMotor.setVelocity(-ticksPerSec);
@@ -160,12 +160,12 @@ public abstract class BaseManualDrive extends LinearOpMode
     }
 
     /**
-     * Turret control: D-pad left/right rotates the turret for aiming.
+     * Turret control: L1 bumper / L2 trigger rotates the turret for aiming.
      */
     private void processTurretInput()
     {
         setMotorPowerFromGamepad(
-            turretMotor, gamepad1.dpad_right, gamepad1.dpad_left, MAX_TURRET_POWER);
+            turretMotor, gamepad1.right_bumper, gamepad1.left_bumper, MAX_TURRET_POWER);
     }
 
     /**
