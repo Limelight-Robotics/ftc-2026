@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Debug op mode for testing individual motors.
  * Each button controls one motor at full power while held:
- *   Y - Front Left
- *   B - Front Right
- *   X - Back Left
- *   A - Back Right
+ *   Triangle - Front Left
+ *   Circle   - Front Right
+ *   Square   - Back Left
+ *   Cross    - Back Right
  */
 @TeleOp(name = "Debug Motors", group = "Diagnostic") public class DebugMotors extends LinearOpMode
 {
@@ -30,7 +30,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         bR = hardwareMap.get(DcMotor.class, "rightBack");
 
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Controls", "Y=FL, B=FR, X=BL, A=BR");
+        telemetry.addData("Controls", "△=FL, ○=FR, □=BL, ✕=BR");
         telemetry.update();
         waitForStart();
         runtime.reset();
@@ -41,19 +41,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             // Hold button = forward, hold button + left bumper = reverse
             double direction = gamepad1.left_bumper ? -1.0 : 1.0;
 
-            fL.setPower(gamepad1.y ? MOTOR_POWER * direction : 0);
-            fR.setPower(gamepad1.b ? MOTOR_POWER * direction : 0);
-            bL.setPower(gamepad1.x ? MOTOR_POWER * direction : 0);
-            bR.setPower(gamepad1.a ? MOTOR_POWER * direction : 0);
+            fL.setPower(gamepad1.triangle ? MOTOR_POWER * direction : 0);
+            fR.setPower(gamepad1.circle ? MOTOR_POWER * direction : 0);
+            bL.setPower(gamepad1.square ? MOTOR_POWER * direction : 0);
+            bR.setPower(gamepad1.cross ? MOTOR_POWER * direction : 0);
 
             // Display motor status
             telemetry.addData("Status", "Run Time: %.2f", runtime.seconds());
-            telemetry.addData("Controls", "Y=FL, B=FR, X=BL, A=BR");
+            telemetry.addData("Controls", "△=FL, ○=FR, □=BL, ✕=BR");
             telemetry.addData("Direction", gamepad1.left_bumper ? "REVERSE (LB held)" : "FORWARD");
-            telemetry.addData("Front Left (Y)", getMotorStatus(gamepad1.y, direction));
-            telemetry.addData("Front Right (B)", getMotorStatus(gamepad1.b, direction));
-            telemetry.addData("Back Left (X)", getMotorStatus(gamepad1.x, direction));
-            telemetry.addData("Back Right (A)", getMotorStatus(gamepad1.a, direction));
+            telemetry.addData("Front Left (△)", getMotorStatus(gamepad1.triangle, direction));
+            telemetry.addData("Front Right (○)", getMotorStatus(gamepad1.circle, direction));
+            telemetry.addData("Back Left (□)", getMotorStatus(gamepad1.square, direction));
+            telemetry.addData("Back Right (✕)", getMotorStatus(gamepad1.cross, direction));
             telemetry.update();
         }
     }

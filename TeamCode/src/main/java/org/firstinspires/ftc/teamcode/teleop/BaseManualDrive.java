@@ -122,7 +122,7 @@ public abstract class BaseManualDrive extends LinearOpMode
     private void processIntakeInput()
     {
         setMotorPowerFromGamepad(
-            intakeMotor, gamepad1.left_bumper, gamepad1.right_bumper, MAX_INTAKE_POWER);
+            intakeMotor, gamepad1.right_bumper, gamepad1.left_bumper, MAX_INTAKE_POWER);
     }
 
     /**
@@ -135,10 +135,10 @@ public abstract class BaseManualDrive extends LinearOpMode
         if (shooterMotor == null)
             return;
 
-        if (gamepad1.x)
+        if (gamepad1.square)
         {
             double ticksPerSec = SHOOTER_TARGET_RPM * SHOOTER_TICKS_PER_REV / 60.0;
-            shooterMotor.setVelocity(ticksPerSec);
+            shooterMotor.setVelocity(-ticksPerSec);
 
             double  actualTicksPerSec = shooterMotor.getVelocity();
             double  actualRPM         = actualTicksPerSec * 60.0 / SHOOTER_TICKS_PER_REV;
@@ -165,7 +165,7 @@ public abstract class BaseManualDrive extends LinearOpMode
     private void processTurretInput()
     {
         setMotorPowerFromGamepad(
-            turretMotor, gamepad1.dpad_left, gamepad1.dpad_right, MAX_TURRET_POWER);
+            turretMotor, gamepad1.dpad_right, gamepad1.dpad_left, MAX_TURRET_POWER);
     }
 
     /**

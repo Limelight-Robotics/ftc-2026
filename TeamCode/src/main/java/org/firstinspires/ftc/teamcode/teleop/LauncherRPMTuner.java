@@ -13,11 +13,11 @@ import org.firstinspires.ftc.teamcode.classes.Vision;
  * Controls:
  *   D-pad Up/Down   — adjust target RPM by ±500
  *   D-pad Left/Right — adjust target RPM by ±100
- *   A button        — toggle launcher motor on/off at current target RPM
- *   B button        — stop motor (safety)
+ *   Cross button    — toggle launcher motor on/off at current target RPM
+ *   Circle button   — stop motor (safety)
  *
  * Workflow:
- *   1. Set RPM with d-pad, press A to spin up
+ *   1. Set RPM with d-pad, press Cross to spin up
  *   2. Fire a ball and measure the landing distance
  *   3. Record the {distance, RPM} pair
  *   4. Repeat at 3-5 distances, then update RPM_TABLE in LauncherHelper
@@ -65,11 +65,11 @@ public class LauncherRPMTuner extends LinearOpMode
         boolean prevDpadDown  = false;
         boolean prevDpadLeft  = false;
         boolean prevDpadRight = false;
-        boolean prevA         = false;
-        boolean prevB         = false;
+        boolean prevCross     = false;
+        boolean prevCircle    = false;
 
         telemetry.addData("Status", "Initialized — press Play to start");
-        telemetry.addData("Controls", "D-pad ↑↓ ±500 | D-pad ←→ ±100 | A toggle | B stop");
+        telemetry.addData("Controls", "D-pad ↑↓ ±500 | D-pad ←→ ±100 | Cross toggle | Circle stop");
         telemetry.update();
 
         waitForStart();
@@ -95,11 +95,11 @@ public class LauncherRPMTuner extends LinearOpMode
             }
 
             // --- Toggle motor on/off ---
-            if (gamepad1.a && !prevA)
+            if (gamepad1.cross && !prevCross)
             {
                 motorRunning = !motorRunning;
             }
-            if (gamepad1.b && !prevB)
+            if (gamepad1.circle && !prevCircle)
             {
                 motorRunning = false;
             }
@@ -109,8 +109,8 @@ public class LauncherRPMTuner extends LinearOpMode
             prevDpadDown  = gamepad1.dpad_down;
             prevDpadLeft  = gamepad1.dpad_left;
             prevDpadRight = gamepad1.dpad_right;
-            prevA         = gamepad1.a;
-            prevB         = gamepad1.b;
+            prevCross     = gamepad1.cross;
+            prevCircle    = gamepad1.circle;
 
             // --- Apply motor velocity ---
             double actualRPM = 0;
@@ -141,7 +141,7 @@ public class LauncherRPMTuner extends LinearOpMode
             telemetry.addData("Motor", motorRunning ? "ON" : "OFF");
             telemetry.addLine();
             telemetry.addData("Controls", "D-pad ↑↓ ±500 | ←→ ±100");
-            telemetry.addData("", "A = toggle motor | B = stop");
+            telemetry.addData("", "Cross = toggle motor | Circle = stop");
 
             if (vision != null && vision.hasTarget())
             {
