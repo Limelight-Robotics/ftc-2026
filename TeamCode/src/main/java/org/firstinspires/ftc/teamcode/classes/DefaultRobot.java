@@ -112,4 +112,10 @@ public class DefaultRobot
     public void lowerLoader() { setLoaderPosition(LOADER_DOWN_POSITION); }
 
     public Vision getVision() { return vision; }
+
+    public void resetEncoders() { drive.resetEncoders(); }
+    public void setTargetPositions(int fl, int fr, int bl, int br) { drive.setTargetPositions(fl, fr, bl, br); }
+    public void setAllMotorPower(double power) { drive.setAllMotorPower(power); }
+    public boolean areMotorsBusy() { return drive.areMotorsBusy(); }
+    public void setRunUsingEncoders() { drive.setRunUsingEncoders(); }
 }

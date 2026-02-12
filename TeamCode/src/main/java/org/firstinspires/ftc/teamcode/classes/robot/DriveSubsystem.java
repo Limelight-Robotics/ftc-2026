@@ -97,4 +97,51 @@ public class DriveSubsystem
     public double getFrontRightPower() { return lastFRPower; }
     public double getBackLeftPower() { return lastBLPower; }
     public double getBackRightPower() { return lastBRPower; }
+
+    /** Reset all drive encoder counts to zero. */
+    public void resetEncoders()
+    {
+        setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    /** Set target positions and switch to RUN_TO_POSITION mode. */
+    public void setTargetPositions(int flTicks, int frTicks, int blTicks, int brTicks)
+    {
+        frontLeft.setTargetPosition(flTicks);
+        frontRight.setTargetPosition(frTicks);
+        backLeft.setTargetPosition(blTicks);
+        backRight.setTargetPosition(brTicks);
+        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    /** Set all motors to the same absolute power (RUN_TO_POSITION uses absolute value). */
+    public void setAllMotorPower(double power)
+    {
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
+        backRight.setPower(power);
+    }
+
+    /** Returns true if any drive motor is still traveling to its target. */
+    public boolean areMotorsBusy()
+    {
+        return frontLeft.isBusy() || frontRight.isBusy()
+            || backLeft.isBusy() || backRight.isBusy();
+    }
+
+    /** Switch all motors back to RUN_USING_ENCODER mode. */
+    public void setRunUsingEncoders()
+    {
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void setRunMode(DcMotor.RunMode mode)
+    {
+        frontLeft.setMode(mode);
+        frontRight.setMode(mode);
+        backLeft.setMode(mode);
+        backRight.setMode(mode);
+    }
 }
