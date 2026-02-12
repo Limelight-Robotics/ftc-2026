@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.classes;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.classes.robot.DriveSubsystem;
 
@@ -12,12 +12,13 @@ public class DefaultRobot
 {
     private DriveSubsystem drive       = null;
     private DcMotor        intakeMotor = null;
-    private Servo          loaderServo = null;
+    private DcMotor        loaderMotor = null;
     private Vision         vision      = null;
 
-    // Loader servo positions
-    public static double LOADER_UP_POSITION   = 1.0;
-    public static double LOADER_DOWN_POSITION = 0.0;
+    // Loader motor encoder positions (ticks) — tune these for your mechanism
+    public static int LOADER_UP_POSITION   = 300;
+    public static int LOADER_DOWN_POSITION = 0;
+    public static double LOADER_MOTOR_POWER = 0.5;
 
     private double lastForward, lastStrafe, lastRotate;
     private double intakePower = 0.0;
@@ -26,7 +27,7 @@ public class DefaultRobot
     {
         drive = new DriveSubsystem(hardwareMap);
         initIntakeMotor(hardwareMap);
-        initLoaderServo(hardwareMap);
+        initLoaderMotor(hardwareMap);
         vision = new Vision(hardwareMap);
     }
 
@@ -43,28 +44,31 @@ public class DefaultRobot
         }
     }
 
-    private void initLoaderServo(HardwareMap hardwareMap)
+    private void initLoaderMotor(HardwareMap hardwareMap)
     {
         try
         {
-            loaderServo = hardwareMap.get(Servo.class, "loader");
+            loaderMotor = hardwareMap.get(DcMotor.class, "loader");
+            loaderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            loaderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            loaderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            loaderMotor.setPower(LOADER_MOTOR_POWER);
         }
         catch (Exception e)
         {
-            loaderServo = null;
-            e.printStackTrace();
+            loaderMotor = null;
         }
     }
 
-    public boolean isLoaderInitialized() { return loaderServo != null; }
+    public boolean isLoaderInitialized() { return loaderMotor != null; }
 
-    public double getLoaderPosition()
+    public int getLoaderPosition()
     {
-        if (loaderServo != null)
+        if (loaderMotor != null)
         {
-            return loaderServo.getPosition();
+            return loaderMotor.getCurrentPosition();
         }
-        return -1.0;
+        return -1;
     }
 
     public void drive(double forward, double strafe, double rotate)
@@ -101,11 +105,11 @@ public class DefaultRobot
         }
     }
 
-    public void setLoaderPosition(double position)
+    public void setLoaderPosition(int targetTicks)
     {
-        if (loaderServo != null)
+        if (loaderMotor != null)
         {
-            loaderServo.setPosition(position);
+             loaderMotor.setTargetPosition(targetTicks);
         }
     }
 

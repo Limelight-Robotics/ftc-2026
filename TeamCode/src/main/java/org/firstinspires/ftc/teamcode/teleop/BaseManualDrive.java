@@ -100,7 +100,7 @@ public abstract class BaseManualDrive extends LinearOpMode
     }
 
     /**
-     * Loader servo control: D-pad up raises the loader, D-pad down lowers it.
+     * Loader motor control: D-pad up raises the loader, D-pad down lowers it.
      */
     private void processLoaderInput()
     {
@@ -210,7 +210,7 @@ public abstract class BaseManualDrive extends LinearOpMode
         telemetry.addData("Inputs", "Fwd: %.2f, Str: %.2f, Rot: %.2f", robot.getLastForward(),
             robot.getLastStrafe(), robot.getLastRotate());
         telemetry.addData("Intake Power", "%.2f", robot.getIntakePower());
-        telemetry.addData("Loader", "Init: %s | Pos: %.2f | DpadUp: %s | DpadDown: %s",
+        telemetry.addData("Loader", "Init: %s | Pos: %d | DpadUp: %s | DpadDown: %s",
             robot.isLoaderInitialized(), robot.getLoaderPosition(), gamepad1.dpad_up,
             gamepad1.dpad_down);
         telemetry.addData("Vision", vision.getStatusString());
