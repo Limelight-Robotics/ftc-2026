@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.classes.Vision;
  * Base class for manual drive OpModes. Provides common drive and intake logic.
  * Subclasses specify the speed multiplier via getSpeedMultiplier().
  */
+@Config
 public abstract class BaseManualDrive extends LinearOpMode
 {
     private final ElapsedTime  runtime = new ElapsedTime();
@@ -21,13 +23,13 @@ public abstract class BaseManualDrive extends LinearOpMode
     // Intake
     private DcMotor             intakeMotor;
     private static final String INTAKE_MOTOR_NAME = "intake";
-    private static final double MAX_INTAKE_POWER  = 1.0;
+    public static double MAX_INTAKE_POWER  = 1.0;
 
     // Shooter (spins up and launches balls)
     private DcMotorEx           shooterMotor;
     private static final String SHOOTER_MOTOR_NAME    = "shooter";
     private static final double SHOOTER_TICKS_PER_REV = 28.0;
-    private static final double SHOOTER_TARGET_RPM    = 3000.0;
+    public static double SHOOTER_TARGET_RPM    = 3000.0;
 
     // Turret (aims the shooter)
     private DcMotor             turretMotor;

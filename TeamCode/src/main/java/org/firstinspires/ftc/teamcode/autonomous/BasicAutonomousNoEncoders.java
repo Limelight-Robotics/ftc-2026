@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,8 +11,9 @@ import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
  * Basic time-based autonomous: strafes left ~2 feet, then drives backward ~4 feet.
  *
  * Because there are no encoders, movement distances are controlled by duration.
- * Tune the TIME constants on the actual robot to get accurate distances.
+ * Tune the TIME constants on the actual robot via FTC Dashboard.
  */
+@Config
 @Autonomous(name = "Basic Autonomous (No Encoders)", group = "1 - Team Code")
 public class BasicAutonomousNoEncoders extends LinearOpMode
 {
@@ -21,9 +23,9 @@ public class BasicAutonomousNoEncoders extends LinearOpMode
     // Drive power (0.0 to 1.0). Lower = more controllable but slower.
     private static final double DRIVE_POWER = 0.5;
 
-    // Time in seconds for each movement. Tune these on the real robot.
-    private static final double STRAFE_LEFT_TIME_SEC  = 2.0;  // ~2 feet left
-    private static final double DRIVE_BACKWARD_TIME_SEC = 4.0; // ~4 feet backward
+    // Time in seconds for each movement. Tune via FTC Dashboard.
+    public static double STRAFE_LEFT_TIME_SEC     = 2.0;  // ~2 feet left
+    public static double DRIVE_BACKWARD_TIME_SEC  = 4.0;  // ~4 feet backward
 
     @Override
     public void runOpMode()

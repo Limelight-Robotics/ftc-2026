@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.classes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.classes.robot.DriveSubsystem;
 
+@Config
 public class DefaultRobot
 {
     private DriveSubsystem drive       = null;
@@ -14,8 +16,8 @@ public class DefaultRobot
     private Vision         vision      = null;
 
     // Loader servo positions
-    public static final double LOADER_UP_POSITION   = 1.0;
-    public static final double LOADER_DOWN_POSITION = 0.0;
+    public static double LOADER_UP_POSITION   = 1.0;
+    public static double LOADER_DOWN_POSITION = 0.0;
 
     private double lastForward, lastStrafe, lastRotate;
     private double intakePower = 0.0;
