@@ -29,7 +29,7 @@ public abstract class BaseManualDrive extends LinearOpMode
     private DcMotorEx           shooterMotor;
     private static final String SHOOTER_MOTOR_NAME    = "shooter";
     private static final double SHOOTER_TICKS_PER_REV = 28.0;
-    public static double SHOOTER_TARGET_RPM    = 3000.0;
+    public static double SHOOTER_TARGET_RPM    = 6000.0;
 
     // Turret (aims the shooter)
     private DcMotor             turretMotor;
