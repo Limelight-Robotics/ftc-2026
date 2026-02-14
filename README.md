@@ -16,9 +16,6 @@ GoBilda 5202/3/4 series
 - 2 - rightBack
 - 3 - leftFront
 
-### Servos
-- 0 - loader
-
 ## Expansion Hub
 ### Motors
 GoBilda 5202/3/4 series
