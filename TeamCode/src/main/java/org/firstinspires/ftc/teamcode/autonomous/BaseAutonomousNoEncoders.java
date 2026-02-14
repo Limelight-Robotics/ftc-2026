@@ -26,10 +26,10 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
   public static double SHOOTER_TARGET_RPM = 3000.0;
 
   // Time in seconds for each step. Tune via FTC Dashboard.
-  public static double DRIVE_BACKWARD_TIME_SEC = 1.5;
+  public static double DRIVE_BACKWARD_TIME_SEC = 5.0;
   public static double SHOOTER_SPINUP_PAUSE_SEC = 2.0;
-  public static double LOADER_FIRE_PAUSE_SEC = 2.0;
-  public static double STRAFE_TIME_SEC = 2.0;
+  public static double LOADER_FIRE_PAUSE_SEC = 5.0;
+  public static double STRAFE_TIME_SEC = 5.0;
 
   /** Returns the strafe power: negative for left (blue), positive for right (red). */
   protected abstract double getStrafePower();
@@ -66,8 +66,8 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
     // Step 5: Pause while the ball fires
     pauseForTime(LOADER_FIRE_PAUSE_SEC);
 
-    // Step 6: Stop shooter and lower loader
-    stopShooter();
+    // Step 6: Lower loader (leave shooter spinning until explicitly stopped)
+    pauseForTime(2.5);
     robot.lowerLoader();
 
     // Step 7: Strafe

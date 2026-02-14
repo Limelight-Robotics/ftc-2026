@@ -111,6 +111,8 @@ public class DefaultRobot {
 
   public void setLoaderPower(double power) {
     if (loaderMotor != null) {
+      // Use Encoders
+      loaderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       loaderMotor.setPower(power);
     }
   }
