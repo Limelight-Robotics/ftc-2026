@@ -25,6 +25,7 @@ GoBilda 5202/3/4 series
 - 0 - shooter
 - 1 - intake
 - 2 - turret
+- 3 - lift
 
 # Controller Map
 All controls use **Gamepad 1** (PS5 DualSense).
@@ -35,30 +36,30 @@ All controls use **Gamepad 1** (PS5 DualSense).
             ┌─────────────────────────────────────────────┐
             │               PS5 DualSense                 │
             │                                             │
-            │    ┌───┐                         ┌───┐     │
-            │    │L1 │  Turret CW     Turret  │R1 │     │
-            │    │   │                  CCW   │   │     │
-            │    └───┘                         └───┘     │
-            │    ┌───┐                         ┌───┐     │
-            │    │L2 │                Shooter  │R2 │     │
-            │    │   │                Spin-up  │   │     │
-            │    └───┘                         └───┘     │
+            │    ┌───┐                         ┌───┐      │
+            │    │L1 │  Turret CW      Turret  │R1 │      │
+            │    │   │                   CCW   │   │      │
+            │    └───┘                         └───┘      │
+            │    ┌───┐                         ┌───┐      │
+            │    │L2 │                Shooter  │R2 │      │
+            │    │   │                Spin-up  │   │      │
+            │    └───┘                         └───┘      │
             │                                             │
-            │     ┌───┐                    ╔═══╗         │
-            │     │ ↑ │ Raise          ┌───╢ △ ║         │
-            │   ┌─┼───┼─┐ Loader      │   ╚═══╝         │
-            │   │ ←   → │         ┌───┐     ┌───┐       │
-            │   └─┼───┼─┘         │ ▢ ├─────┤ ○ │       │
-            │     │ ↓ │ Lower     └───┘     └───┘       │
-            │     └───┘  Loader    Intake    ┌───┐       │
-            │                      Forward   │ ✕ │       │
-            │   ╔═══════╗                    └───┘       │
-            │   ║ L Joy ║                   Intake       │
-            │   ║       ║     ╔═══════╗     Reverse      │
-            │   ║  F/B  ║     ║ R Joy ║                  │
-            │   ║Strafe ║     ║       ║                  │
-            │   ╚═══════╝     ║Rotate ║                  │
-            │                 ╚═══════╝                  │
+            │     ┌───┐                    ╔═══╗          │
+            │     │ ↑ │ Raise          ┌───╢ △ ║          │
+            │   ┌─┼───┼─┐ Loader       │   ╚═══╝          │
+            │   │ ←   → │         ┌───┐|    ┌───┐         │
+            │   └─┼───┼─┘         │ ▢ ├─────┤ ○ │         │
+            │     │ ↓ │ Lower     └───┘     └───┘         │
+            │     └───┘  Loader    Intake    ┌───┐        │
+            │                      Forward   │ ✕ │        │
+            │   ╔═══════╗                    └───┘        │
+            │   ║ L Joy ║                   Intake        │
+            │   ║       ║     ╔═══════╗     Reverse       │
+            │   ║  F/B  ║     ║ R Joy ║                   │
+            │   ║Strafe ║     ║       ║                   │
+            │   ╚═══════╝     ║Rotate ║                   │
+            │                 ╚═══════╝                   │
             └─────────────────────────────────────────────┘
 ```
 
