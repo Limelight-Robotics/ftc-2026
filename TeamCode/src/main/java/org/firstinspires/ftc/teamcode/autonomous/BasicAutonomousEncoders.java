@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
  * Uses RUN_TO_POSITION mode for accurate distance control.
  * Update TICKS_PER_REV and WHEEL_DIAMETER_INCHES to match your motor/wheel hardware.
  */
+@Disabled
 @Autonomous(name = "Basic Autonomous (Encoders)", group = "1 - Team Code")
 public class BasicAutonomousEncoders extends LinearOpMode {
   private final DefaultRobot robot = new DefaultRobot();

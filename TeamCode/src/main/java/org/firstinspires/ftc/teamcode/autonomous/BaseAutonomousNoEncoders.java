@@ -24,13 +24,13 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
 
   // Shooter config
   public static double SHOOTER_TICKS_PER_REV = 28.0;
-  public static double SHOOTER_TARGET_RPM = 3000.0;
+  public static double SHOOTER_TARGET_RPM = 6000.0;
 
   // Time in seconds for each step. Tune via FTC Dashboard.
-  public static double DRIVE_BACKWARD_TIME_SEC = 5.0;
-  public static double SHOOTER_SPINUP_PAUSE_SEC = 2.0;
-  public static double LOADER_FIRE_PAUSE_SEC = 5.0;
-  public static double STRAFE_TIME_SEC = 5.0;
+  public static double DRIVE_BACKWARD_TIME_SEC = 2.0;
+  // public static double SHOOTER_SPINUP_PAUSE_SEC = 2.0;
+  // public static double LOADER_FIRE_PAUSE_SEC = 5.0;
+  public static double STRAFE_TIME_SEC = 2.0;
 
   /** Returns the strafe power: negative for left (blue), positive for right (red). */
   protected abstract double getStrafePower();
@@ -51,6 +51,7 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
     telemetry.update();
     driveForTime(-DRIVE_POWER, 0, 0, DRIVE_BACKWARD_TIME_SEC);
 
+    /*
     // Step 2: Start the shooter motor
     telemetry.addData("Step", "2 - Spinning up shooter");
     telemetry.update();
@@ -70,9 +71,10 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
     // Step 6: Lower loader (leave shooter spinning until explicitly stopped)
     pauseForTime(2.5);
     robot.lowerLoader();
+    */
 
-    // Step 7: Strafe
-    telemetry.addData("Step", "4 - Strafing");
+    // Step 2: Strafe
+    telemetry.addData("Step", "2 - Strafing");
     telemetry.update();
     driveForTime(0, getStrafePower(), 0, STRAFE_TIME_SEC);
 
