@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.classes.DefaultRobot;
@@ -85,6 +86,8 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
   private DcMotorEx initShooterMotor() {
     try {
       DcMotorEx m = hardwareMap.get(DcMotorEx.class, "shooter");
+      // ensure motor is in a mode that supports velocity control
+      m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       m.setPower(0.0);
       return m;
     } catch (Exception e) {
@@ -111,9 +114,11 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
    */
   private void driveForTime(double forward, double strafe, double rotate, double seconds) {
     timer.reset();
-    robot.drive(forward, strafe, rotate);
-
+    // Re-assert drive power each loop iteration to ensure motor controllers
+    // keep the commanded power (prevents external code or mode changes
+    // from briefly zeroing outputs).
     while (opModeIsActive() && timer.seconds() < seconds) {
+      robot.drive(forward, strafe, rotate);
       telemetry.addData("Time", "%.1f / %.1f sec", timer.seconds(), seconds);
       telemetry.update();
       sleep(50);
