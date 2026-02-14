@@ -24,7 +24,7 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
 
   // Shooter config
   public static double SHOOTER_TICKS_PER_REV = 28.0;
-  public static double SHOOTER_TARGET_RPM = 3000.0;
+  public static double SHOOTER_TARGET_RPM = 6000.0;
 
   // Time in seconds for each step. Tune via FTC Dashboard.
   public static double DRIVE_BACKWARD_TIME_SEC = 5.0;

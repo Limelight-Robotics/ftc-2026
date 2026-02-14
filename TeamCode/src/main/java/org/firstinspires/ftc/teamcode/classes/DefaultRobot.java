@@ -18,7 +18,7 @@ public class DefaultRobot {
     // Loader motor encoder positions (ticks) — tune these for your mechanism
     public static int LOADER_UP_POSITION = 5;
     public static int LOADER_DOWN_POSITION = 0;
-    public static double LOADER_MOTOR_POWER = .5;
+    public static double LOADER_MOTOR_POWER = 1;
 
     private double lastForward, lastStrafe, lastRotate;
     private double intakePower = 0.0;
@@ -132,7 +132,6 @@ public class DefaultRobot {
     public void stopLoader() {
         if (loaderMotor != null) {
             loaderMotor.setPower(0);
-            loaderMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
