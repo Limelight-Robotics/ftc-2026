@@ -50,7 +50,7 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
     telemetry.addData("Step", "1 - Driving backward");
     telemetry.update();
     driveForTime(-DRIVE_POWER, 0, 0, DRIVE_BACKWARD_TIME_SEC);
-
+    /*
     // Step 2: Start the shooter motor
     telemetry.addData("Step", "2 - Spinning up shooter");
     telemetry.update();
@@ -70,6 +70,7 @@ public abstract class BaseAutonomousNoEncoders extends LinearOpMode {
     // Step 6: Lower loader (leave shooter spinning until explicitly stopped)
     pauseForTime(2.5);
     robot.lowerLoader();
+     */
 
     // Step 7: Strafe
     telemetry.addData("Step", "4 - Strafing");

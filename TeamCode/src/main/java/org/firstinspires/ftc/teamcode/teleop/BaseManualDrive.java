@@ -56,7 +56,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
       processDriveInput();
       processIntakeInput();
       processShooterInput();
-      processTurretInput();
+      //processTurretInput();
       processLoaderInput();
       vision.update();
       updateTelemetry();
@@ -108,7 +108,7 @@ public abstract class BaseManualDrive extends LinearOpMode {
   }
 
   private void processIntakeInput() {
-    setMotorPowerFromGamepad(intakeMotor, gamepad1.cross, gamepad1.square, MAX_INTAKE_POWER);
+    setMotorPowerFromGamepad(intakeMotor, gamepad1.right_bumper, gamepad1.left_bumper, MAX_INTAKE_POWER);
   }
 
   /**
